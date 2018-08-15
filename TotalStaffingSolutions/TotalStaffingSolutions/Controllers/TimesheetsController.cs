@@ -30,6 +30,7 @@ namespace TotalStaffingSolutions.Controllers
         private static int SenderEmailPort = Convert.ToInt32(WebConfigurationManager.AppSettings["DefaultEmailPort"]);
         private static string SenderEmailHost = WebConfigurationManager.AppSettings["DefaultEmailHost"];
         private static string TSSLiveSiteURL = WebConfigurationManager.AppSettings["TSSLiveSiteURL"];
+        private static string LogoPath = WebConfigurationManager.AppSettings["LogoPath"];
         private enum WeekDays
         {
             Sun = 0,
@@ -290,7 +291,7 @@ namespace TotalStaffingSolutions.Controllers
 
                         })
                         {
-                            message.CC.Add("jgallelli@4tssi.com");
+                            //message.CC.Add("jgallelli@4tssi.com");
                             smtp.Send(message);
                         }
                         ///
@@ -338,7 +339,7 @@ namespace TotalStaffingSolutions.Controllers
 
                         })
                         {
-                            message.CC.Add("jgallelli@4tssi.com");
+                            //message.CC.Add("jgallelli@4tssi.com");
                             ////message.CC.Add("payroll@4tssi.com");
                             smtp.Send(message);
                         }
@@ -651,14 +652,14 @@ namespace TotalStaffingSolutions.Controllers
                 }
                 if (TimesheetSummaries[0].Timesheet.Customer.PhoneNumber != "")
                 {
-                    CustomerDetails = CustomerDetails + "\n" +
+                    CustomerDetails = CustomerDetails + "\n\n" +
                     TimesheetSummaries[0].Timesheet.Customer.PhoneNumber;
 
                 }
                 if (TimesheetSummaries[0].Timesheet.End_date != null)
                 {
                     CustomerDetails = CustomerDetails + "\nWeek Ending:" +
-                    TimesheetSummaries[0].Timesheet.End_date.ToString();
+                    TimesheetSummaries[0].Timesheet.End_date.Value.ToString("MM/dd/yyyy");
                 }
                 CustomerDetails = CustomerDetails + "\n\n";
 
@@ -672,19 +673,21 @@ namespace TotalStaffingSolutions.Controllers
 
                 });
 
-                tableLayout.AddCell(new PdfPCell(new Phrase("Total Staffing Solutions", new Font(Font.FontFamily.TIMES_ROMAN, 16, 2, new iTextSharp.text.BaseColor(0, 0, 0))))
-                {
-                    Colspan = 6,
-                    Border = 0,
-                    PaddingBottom = 5,
-                    HorizontalAlignment = Element.ALIGN_CENTER
-                });
+                //tableLayout.AddCell(new PdfPCell(new Phrase("Total Staffing Solutions", new Font(Font.FontFamily.TIMES_ROMAN, 16, 2, new iTextSharp.text.BaseColor(0, 0, 0))))
+                //{
+                //    Colspan = 6,
+                //    Border = 0,
+                //    PaddingBottom = 5,
+                //    HorizontalAlignment = Element.ALIGN_CENTER
+                //});
+                tableLayout.AddCell(createImageCell());
                 tableLayout.AddCell(new PdfPCell(new Phrase(CustomerDetails, new Font(Font.FontFamily.TIMES_ROMAN, 12, 2, new iTextSharp.text.BaseColor(0, 0, 0))))
                 {
                     Colspan = 7,
                     Border = 0,
                     PaddingBottom = 5,
-                    HorizontalAlignment = Element.ALIGN_MIDDLE
+                    PaddingLeft = 10,
+                    HorizontalAlignment = Element.ALIGN_CENTER
                 });
 
 
@@ -708,19 +711,19 @@ namespace TotalStaffingSolutions.Controllers
                 AddCellToHeader(tableLayout, "Emp#");
                 AddCellToHeader(tableLayout, "RT");
                 var weekDay = Convert.ToInt32(TimesheetSummaries[0].Starting_day_of_week);
-                AddCellToHeader(tableLayout, TimesheetSummaries[0].Starting_date.Value.ToString("MMM/dd") + "\n" + values.GetValue(weekDay).ToString());
+                AddCellToHeader(tableLayout, values.GetValue(weekDay).ToString() + "\n" + TimesheetSummaries[0].Starting_date.Value.ToString("MMM/dd") );
                 weekDay = (weekDay == 6) ? 0 : weekDay + 1;
-                AddCellToHeader(tableLayout, TimesheetSummaries[0].Starting_date.Value.AddDays(1).ToString("MMM/dd") + "\n" + values.GetValue(weekDay).ToString());
+                AddCellToHeader(tableLayout, values.GetValue(weekDay).ToString() + "\n" + TimesheetSummaries[0].Starting_date.Value.AddDays(1).ToString("MMM/dd") );
                 weekDay = (weekDay == 6) ? 0 : weekDay + 1;
-                AddCellToHeader(tableLayout, TimesheetSummaries[0].Starting_date.Value.AddDays(2).ToString("MMM/dd") + "\n" + values.GetValue(weekDay).ToString());
+                AddCellToHeader(tableLayout, values.GetValue(weekDay).ToString() + "\n" + TimesheetSummaries[0].Starting_date.Value.AddDays(2).ToString("MMM/dd"));
                 weekDay = (weekDay == 6) ? 0 : weekDay + 1;
-                AddCellToHeader(tableLayout, TimesheetSummaries[0].Starting_date.Value.AddDays(3).ToString("MMM/dd") + "\n" + values.GetValue(weekDay).ToString());
+                AddCellToHeader(tableLayout, values.GetValue(weekDay).ToString() + "\n" + TimesheetSummaries[0].Starting_date.Value.AddDays(3).ToString("MMM/dd"));
                 weekDay = (weekDay == 6) ? 0 : weekDay + 1;
-                AddCellToHeader(tableLayout, TimesheetSummaries[0].Starting_date.Value.AddDays(4).ToString("MMM/dd") + "\n" + values.GetValue(weekDay).ToString());
+                AddCellToHeader(tableLayout, values.GetValue(weekDay).ToString() + "\n" + TimesheetSummaries[0].Starting_date.Value.AddDays(4).ToString("MMM/dd"));
                 weekDay = (weekDay == 6) ? 0 : weekDay + 1;
-                AddCellToHeader(tableLayout, TimesheetSummaries[0].Starting_date.Value.AddDays(5).ToString("MMM/dd") + "\n" + values.GetValue(weekDay).ToString());
+                AddCellToHeader(tableLayout, values.GetValue(weekDay).ToString() + "\n" + TimesheetSummaries[0].Starting_date.Value.AddDays(5).ToString("MMM/dd"));
                 weekDay = (weekDay == 6) ? 0 : weekDay + 1;
-                AddCellToHeader(tableLayout, TimesheetSummaries[0].Starting_date.Value.AddDays(6).ToString("MMM/dd") + "\n" + values.GetValue(weekDay).ToString());
+                AddCellToHeader(tableLayout, values.GetValue(weekDay).ToString() + "\n" + TimesheetSummaries[0].Starting_date.Value.AddDays(6).ToString("MMM/dd"));
                 AddCellToHeader(tableLayout, "Total");
                 AddCellToHeader(tableLayout, "Rate Performance");
 
@@ -833,13 +836,29 @@ namespace TotalStaffingSolutions.Controllers
             }
 
         }
-        // Method to add single cell to the Header  
-        private static void AddCellToHeader(PdfPTable tableLayout, string cellText)
+
+
+        public static PdfPCell createImageCell()
+        {
+            String path = TSSLiveSiteURL + LogoPath;
+            iTextSharp.text.Image img = iTextSharp.text.Image.GetInstance(path.Replace('\\', '/'));
+            PdfPCell cell = new PdfPCell(img, true)
+            {
+                Colspan = 6,
+                Border = 0,
+                PaddingBottom = 5,
+                PaddingRight = 5,
+                HorizontalAlignment = Element.ALIGN_CENTER
+            };
+            return cell;
+        }
+    // Method to add single cell to the Header  
+    private static void AddCellToHeader(PdfPTable tableLayout, string cellText)
         {
             try
             {
 
-                tableLayout.AddCell(new PdfPCell(new Phrase(cellText, new Font(Font.FontFamily.TIMES_ROMAN, 10, 1, iTextSharp.text.BaseColor.BLACK)))
+                tableLayout.AddCell(new PdfPCell(new Phrase(cellText, new Font(Font.FontFamily.TIMES_ROMAN, 10, Font.BOLD, iTextSharp.text.BaseColor.BLACK)))
                 {
                     HorizontalAlignment = Element.ALIGN_CENTER,
                     Padding = 1,
@@ -894,7 +913,7 @@ namespace TotalStaffingSolutions.Controllers
         {
             try
             {
-                var rowColor = (color) ? new iTextSharp.text.BaseColor(227, 232, 239) : new iTextSharp.text.BaseColor(255, 255, 255);
+                var rowColor = (color) ? new iTextSharp.text.BaseColor(247, 248, 249) : new iTextSharp.text.BaseColor(255, 255, 255);
 
                 tableLayout.AddCell(new PdfPCell(new Phrase(cellText, new Font(Font.FontFamily.HELVETICA, 8, 1, iTextSharp.text.BaseColor.BLACK)))
                 {
@@ -902,6 +921,7 @@ namespace TotalStaffingSolutions.Controllers
                     Padding = 3,
                     BackgroundColor = rowColor
                 });
+                
             }
             catch (Exception ex)
             {

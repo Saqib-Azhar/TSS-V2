@@ -1,0 +1,26 @@
+15-Aug-18 4:27:28 PM Could not find a part of the path 'C:\assets\logo.png'.
+15-Aug-18 4:27:28 PM System Could not find a part of the path 'C:\assets\logo.png'.
+15-Aug-18 4:27:29 PM The document has no pages.
+15-Aug-18 4:27:29 PM itextsharp The document has no pages.
+15-Aug-18 4:37:10 PM URI formats are not supported.
+15-Aug-18 4:37:10 PM mscorlib URI formats are not supported.
+15-Aug-18 4:37:10 PM The document has no pages.
+15-Aug-18 4:37:10 PM itextsharp The document has no pages.
+15-Aug-18 4:37:44 PM URI formats are not supported.
+15-Aug-18 4:37:44 PM mscorlib URI formats are not supported.
+15-Aug-18 4:37:44 PM The document has no pages.
+15-Aug-18 4:37:44 PM itextsharp The document has no pages.
+15-Aug-18 4:38:16 PM Unable to connect to the remote server
+15-Aug-18 4:38:16 PM System Unable to connect to the remote server
+15-Aug-18 4:38:16 PM The document has no pages.
+15-Aug-18 4:38:16 PM itextsharp The document has no pages.
+15-Aug-18 4:38:35 PM URI formats are not supported.
+15-Aug-18 4:38:35 PM mscorlib URI formats are not supported.
+15-Aug-18 4:38:35 PM The document has no pages.
+15-Aug-18 4:38:35 PM itextsharp The document has no pages.
+15-Aug-18 4:40:14 PM URI formats are not supported.
+15-Aug-18 4:40:15 PM mscorlib URI formats are not supported.
+15-Aug-18 4:40:15 PM The document has no pages.
+15-Aug-18 4:40:15 PM itextsharp The document has no pages.
+15-Aug-18 4:46:05 PM Object reference not set to an instance of an object.
+15-Aug-18 4:46:05 PM TotalStaffingSolutions Object reference not set to an instance of an object.

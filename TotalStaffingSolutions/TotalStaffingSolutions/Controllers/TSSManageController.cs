@@ -376,7 +376,7 @@ namespace TotalStaffingSolutions.Controllers
 
                 })
                 {
-                    message.CC.Add("jgallelli@4tssi.com");
+                    //message.CC.Add("jgallelli@4tssi.com");
 
                     smtp.Send(message);
                 }
@@ -464,7 +464,7 @@ namespace TotalStaffingSolutions.Controllers
 
                 })
                 {
-                    message.CC.Add("jgallelli@4tssi.com");
+                    //message.CC.Add("jgallelli@4tssi.com");
                     ////message.CC.Add("payroll@4tssi.com");
                     smtp.Send(message);
                 }
