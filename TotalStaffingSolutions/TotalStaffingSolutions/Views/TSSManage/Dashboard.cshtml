@@ -1,0 +1,445 @@
+﻿@model IEnumerable<TotalStaffingSolutions.Models.Timesheet>
+
+
+<script src="~/assets/scripts/jquery.min.js"></script>
+
+<style>
+    .table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
+    padding: 6px !important;
+}
+</style>
+<div class="modal fadee" id="ShowRejectionReason" role="dialog">
+    <div class="modal-dialog" >
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Rejection Reason</h4>
+            </div>
+            <div class="modal-body" id="rejectionContentBody">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+<div class="modal fadee" id="emailsList" role="dialog">
+    <div class="modal-dialog" >
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Available Email Addresses</h4>
+            </div>
+            <div class="modal-body" id="contentBody">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+<div class="row small-spacing">
+    <div class="col-xs-12">
+        <div class="box-content">
+
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-5" style="padding:0 0 0 10px;">
+                            <input type="date" id="start_date" placeholder="Start Date" onchange="DateFilterUpdate(this)" class="form-control" />
+                        </div>
+                        <div class="col-md-5" style="padding:0 7px 0 7px;">
+                            <input type="date" id="end_date" placeholder="End Date" onchange="DateFilterUpdate(this)" class="form-control" />
+                        </div>
+                        <div class="col-md-2" style="padding:0 0 0 0;">
+                            <button onclick="getResults()" class="form-control btn btn-default"><span class="fa fa-search"></span></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    @Html.DropDownList("ClientsList", null, htmlAttributes: new { @class = "form-control", @onchange = "getResults()" })
+                </div>
+                <div class="col-md-3 right pull-right">
+                    @Html.DropDownList("BranchsList", null, htmlAttributes: new { @class = "form-control", @onchange = "getResults()" })
+                </div>
+            </div>
+            <br />
+            <div class="row">
+                <div class="pull-right">
+                    <button id="ExportInExcel" class="btn btn-primary" onclick="ExportInExcel()" disabled>Export</button>
+                    <button id="ExportInPDF" class="btn btn-primary" onclick="ExportInPDF()" disabled>Bulk</button>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox" id="selectAll" value=""></th>
+                            <th>Company Name</th>
+                            <th>Sheet#</th>
+                            <th>Week Ending Date</th>
+                            <th>Status</th>
+                            <th>Total Employees</th>
+                            <th></th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @try
+                        {
+                            foreach (var item in Model)
+                            {
+                                <tr>
+                                    <th><input type="checkbox" name="selectItem" value="@item.Id"></th>
+                                    <td><a href="/TSSManage/ClientDetails/@item.Customer_id">@item.Customer.Name</a></td>
+                                    <td><a href="/Timesheets/TimeSheetDetails/@item.Id">#@item.Id</a>
+                                        @if (item.Note != null && item.Note != "")
+                                        {
+                                            <b style="color:red" data-toggle="tooltip" title="With Note">!</b>
+                                        }</td>
+                                    <td>
+                                       @Convert.ToDateTime(item.End_date).ToString("dd/MMM/yyyy")
+                                    </td>
+                                    <td>
+                                        @if (item.TimeSheetStatu.Id == 3)
+                                        {
+                                            <span class="notice notice-yellow">@item.TimeSheetStatu.Status</span>
+                                        }
+                                        else if (item.TimeSheetStatu.Id == 4)
+                                        {
+                                            <span class="notice notice-danger" style="cursor:pointer" onclick="RejectionReason(@item.Id)">@item.TimeSheetStatu.Status</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="notice notice-blue">@item.TimeSheetStatu.Status</span>
+                                        }
+                                    </td>
+                                    <td>@item.Total_employees</td>
+                                    <td colspan="2">
+                                        <a class="btn btn-xs btn-primary" href="/Timesheets/TimeSheetDetails/@item.Id" data-toggle="tooltip" title="View Timesheet"><span class="glyphicon glyphicon-eye-open"></span></a>
+                                        <button class="btn btn-xs btn-primary" onclick="CopyTimesheet(@item.Id)" data-toggle="tooltip" title="Create copy"><span class="glyphicon glyphicon-duplicate"></span></button>
+                                        <a class="btn btn-xs btn-primary" href="/Timesheets/EditTimeSheet/@item.Id" data-toggle="tooltip" title="Edit Timesheet"><span class="glyphicon glyphicon-edit"></span></a>
+                                        <a class="btn btn-xs btn-primary" href="/Timesheets/ExportInExcel?ids=@item.Id" data-toggle="tooltip" title="Download Timesheet"><span class="glyphicon glyphicon-download"></span></a>
+                                        <button class="btn btn-xs btn-danger" onclick="DeleteTimesheetLink(@item.Id)" data-toggle="tooltip" title="Delete timesheet"><span class="glyphicon glyphicon-remove"></span></button>
+                                        <button class="btn btn-xs btn-success" onclick="GetClientEmails(@item.Id,@item.TimeSheetStatu.Id)" data-toggle="tooltip" title="Send Link"><span class="glyphicon glyphicon-forward"></span></button>
+                                    </td>
+                                </tr>
+
+
+
+                            }
+                        }
+                        catch (Exception)
+                        {
+
+                           
+                        }
+
+
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+        <!-- /.box-content -->
+    </div>
+    <!-- /.col-xs-12 -->
+</div>
+<!-- /.row small-spacing -->
+<div id="wait" style="display:none;width:69px;height:89px;border:1px solid black;position:absolute;top:45%;left:45%;padding:2px;"><img src='~/assets/loading_gif.gif' width="64" height="64" /><br>Loading..</div>
+
+<script>
+    function SendTimesheetLink(id, email, timesheetStatus)
+    {
+        if (timesheetStatus == 3)
+        {
+            if (window.confirm("This timesheet is already submitted, \nDo you want still want to Send link?"))
+            {
+                $('#emailsList').modal('toggle');
+                $.ajax({
+                    type: 'POST',
+                    data: JSON.stringify({ id: id, email: email, checkUser: 0 }),
+                    url: '@Url.Action("SendTimeSheetLink", "TSSManage")',
+                    dataType: "json",
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (data) {
+              
+                        if (data == "Customer Doesn't Exists")
+                        {
+                            if(confirm("This email address is not registered, Do you want to send the invitation?"))
+                            {
+                                window.location = "/TSSManage/SendAccountEmail?Email=" + email +"&Id=" +id;
+                            }
+                        }
+                        else {
+                            alert(data);
+                        }
+                    },
+                    error: function (req, status, errorObj) {
+                        alert(errorObj.toString());
+                    }
+                });
+            }
+            else
+            {
+                $('#emailsList').modal('toggle');
+
+            }
+        }
+        else
+        {
+            $('#emailsList').modal('toggle');
+        $.ajax({
+            type: 'POST',
+            data: JSON.stringify({ id: id, email: email, checkUser: 0 }),
+            url: '@Url.Action("SendTimeSheetLink", "TSSManage")',
+            dataType: "json",
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+
+                if (data == "Customer Doesn't Exists") {
+                    if (confirm("This email address is not registered, Do you want to send the invitation?")) {
+                        window.location = "/TSSManage/SendConfirmationStatus?Email=" + email + "&Id=" + id;
+                    }
+                }
+                else {
+                    alert(data);
+                }
+            },
+            error: function (req, status, errorObj) {
+                alert(errorObj.toString());
+            }
+        });
+
+
+        }
+    }
+
+    function DeleteTimesheetLink(id)
+    {
+        $.ajax({
+            type: 'POST',
+            data: JSON.stringify({ id: id }),
+            url: '@Url.Action("DeleteTimeSheet", "Timesheets")',
+            dataType: "json",
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                var r = confirm(data);
+                if (r == true) {
+                    window.location.reload();
+                }
+                else
+                {
+                    window.location.reload();
+                }
+            },
+            error: function (req, status, errorObj) {
+                alert(errorObj.toString());
+            }
+        });
+    }
+    function CopyTimesheet(id)
+    {
+        $.ajax({
+            type: 'POST',
+            data: JSON.stringify({ id: id }),
+            url: '@Url.Action("CopyTimeSheet", "Timesheets")',
+            dataType: "json",
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                var r = confirm(data);
+                if (r == true) {
+                    window.location.reload();
+                }
+                else
+                {
+                    window.location.reload();
+                }
+            },
+            error: function (req, status, errorObj) {
+                alert(errorObj.toString());
+            }
+
+        });
+    }
+
+    function ResultsByBranches()
+    {
+        var dropdownValue = $("#BranchsList").val();
+        window.location = "/TSSManage/TimeSheetsByBranch/"+dropdownValue;
+    }
+
+    $(document).ready(function () {
+        $(document).ajaxStart(function () {
+            $("#wait").css("display", "block");
+            var screenTop = $(document).scrollTop();
+            $('#wait').css('top', screenTop + 320);
+        });
+        $(document).ajaxComplete(function () {
+            $("#wait").css("display", "none");
+        });
+        $("button").click(function () {
+            $("#txt").load("demo_ajax_load.asp");
+        });
+        $('[data-toggle="tooltip"]').tooltip();
+        if ('@(ViewBag.SelectedBranchId)' != null && '@(ViewBag.SelectedBranchId)' != "")
+        {
+            var selectedBranchId = '@ViewBag.SelectedBranchId';
+            document.getElementById('BranchsList').value = selectedBranchId;
+        }
+
+        if ('@(ViewBag.SelectedClientId)' != null && '@(ViewBag.SelectedClientId)' != "")
+        {
+            var SelectedClientId = '@ViewBag.SelectedClientId';
+            document.getElementById('ClientsList').value = SelectedClientId;
+        }
+        $("#selectAll").click(function () {
+            $('input:checkbox').not(this).prop('checked', this.checked);
+            if ($('#selectAll').is(":checked")) {
+                $("#ExportInExcel").removeAttr("disabled");
+                $("#ExportInPDF").removeAttr("disabled");
+            }
+            else {
+                $("#ExportInExcel").attr("disabled", "disabled");
+                $("#ExportInPDF").attr("disabled", "disabled");
+            }
+        });
+        $('[name="selectItem"]').click(function () {
+            //$('input:checkbox').not(this).prop('checked', this.checked);
+            if ($('[name="selectItem"]').is(":checked")) {
+                $("#ExportInExcel").removeAttr("disabled");
+                $("#ExportInPDF").removeAttr("disabled");
+            }
+            else {
+                $("#ExportInExcel").attr("disabled", "disabled");
+                $("#ExportInPDF").attr("disabled", "disabled");
+            }
+        });
+    });
+
+    function DateFilterUpdate(dateElem)
+    {
+        if (dateElem.id == "start_date")
+        {
+
+        }
+        else if (dateElem.id == "end_date")
+        {
+
+        }
+    }
+
+    function SearchByDates()
+    {
+        var startdate = $("#start_date").val();
+        var enddate = $("#end_date").val();
+        window.location = "/TSSManage/Timesheetsbyperiod?start_date=" + startdate + "&end_date=" + enddate;
+    }
+
+
+    function getResults() {
+        var branchId = $("#BranchsList").val();
+        var clientId = $("#ClientsList").val();
+        var startdate = $("#start_date").val();
+        var enddate = $("#end_date").val();
+        window.location = "/TSSManage/Dashboard?start_date=" + startdate + "&end_date=" + enddate + "&branch_id=" + branchId + "&client_id=" + clientId;
+    }
+
+    function GetClientEmails(timesheetId,timesheetStatus)
+    {
+
+        $.ajax({
+            type: 'POST',
+            data: JSON.stringify({ timesheetId: timesheetId }),
+            url: '@Url.Action("GetClientEmails", "TSSManage")',
+            dataType: "json",
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                $("#emailsList").modal("show");
+                var html = "";
+                $.each(data, function (i, item) {
+                    var email = JSON.stringify(item);
+                    console.log(item);
+                    if (item != null && item != "")
+                    {
+                        html = html + "<div class='row'><div class='col-md-6'>" + item + "</div><div class='col-md-6'><button onclick='SendTimesheetLink(" + timesheetId + "," + email + "," + timesheetStatus + ")' class='btn btn-default form-control'>Send Email</button></div></div><br/>";
+                    }
+                    else if(item == "No Email Available")
+                    {
+                        html = html + "<div class='row'><div class='col-md-6' style='color:red'>" + item + "</div><div class='col-md-6'></div></div>";
+                    }
+                });
+                $("#contentBody").html(html);
+                $('.modal-backdrop').remove();
+                var screenTop = $(document).scrollTop();
+                $('.modal').css('top', screenTop + 150);
+            },
+            error: function (req, status, errorObj) {
+                alert(errorObj.toString());
+            }
+        });
+    }
+
+    function RejectionReason(timesheetId) {
+
+        $.ajax({
+            type: 'POST',
+            data: JSON.stringify({ timesheetId: timesheetId }),
+            url: '@Url.Action("GetRejectionReason", "TSSManage")',
+            dataType: "json",
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                $("#rejectionContentBody").html("");
+                $("#ShowRejectionReason").modal("show");
+
+                $("#rejectionContentBody").html("<div class='row'><div class='col-md-12'>" + data.RejectionReason + "</div><div class='col-md-6'></div></div>");
+                $('.modal-backdrop').remove();
+                //window.location.hash = '#rejectionContentBody';
+                //$('#ShowRejectionReason').focus();
+
+                var screenTop = $(document).scrollTop();
+                $('.modal').css('top', screenTop + 150);
+            },
+            error: function (req, status, errorObj) {
+                alert(errorObj.toString());
+            }
+        });
+    }
+
+
+    function ExportInExcel() {
+        var array = $.map($('input[name="selectItem"]:checked'), function (c) { return c.value; });
+        //var ids = JSON.stringify(array);
+        var ids = "";
+
+        for (a = 0; a < array.length; a++)
+        {
+            ids = ids + "," + array[a];
+        }
+        console.log(ids);
+        //ids = '"' + ids + '"';
+        window.location = "/Timesheets/ExportInExcel?ids=" + ids;
+
+    }
+    function ExportInPDF()
+    {
+        var array = $.map($('input[name="selectItem"]:checked'), function (c) { return c.value; });
+        //var ids = JSON.stringify(array);
+        var ids = "";
+
+        for (a = 0; a < array.length; a++) {
+            ids = ids + "," + array[a];
+        }
+        console.log(ids);
+        //ids = '"' + ids + '"';
+        window.location = "/Timesheets/ExportInPDF?ids=" + ids;
+    }
+</script>

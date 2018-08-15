@@ -1,0 +1,845 @@
+﻿@using TotalStaffingSolutions.Models
+@model TotalStaffingSolutions.Models.TimesheetObjectTuple
+@{
+    ViewBag.Title = "Edit Time Sheet";
+    int counter = 0;
+    int HoursCounter = 0;
+}
+<script src="~/assets/scripts/jquery.min.js"></script>
+<script src="~/assets/plugin/jquery-ui/jquery-ui.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+@*<script src="~/Content/bootstrap-datepicker.js"></script>
+    <script src="~/Content/bootstrap-datepicker.min.js"></script>*@
+<style>
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    .ui-widget {
+        z-index: 200 !important;
+        background-color: white !important;
+        border: 1px solid grey;
+        width: 500px !important;
+        height: 200px;
+        overflow: auto;
+        list-style: none;
+        line-height: 20px;
+        cursor: pointer;
+    }
+</style>
+
+
+@*<script src="~/assets/scripts/jquery.min.js"></script>*@
+
+<div class="row small-spacing" id="parent_div">
+    <div class="col-xs-12">
+        <div class="box-content">
+            <div class="row new-main-invoice">
+                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 create-time-text">
+                    @if (ViewBag.DisplayPicture != "" && ViewBag.DisplayPicture != null)
+                    {
+                        <img alt="logo" style="width:150px; height:150px" src="~/ProfileImages/@ViewBag.DisplayPicture">
+                    }
+                    else
+                    {
+                        <img alt="logo" style="width:150px; height:150px" src="~/assets/Image-not-available.png">
+                    }
+                </div>
+                <div class="col-lg-5 col-md-5 col-sm-5 col-xs-12">
+                    <div class="new-invoice-top2">
+                        <div class="create-time-logo2">
+                            <div><b>@Model.TimeSheetGeneralDetails.Customer.Name</b><br>@Model.TimeSheetGeneralDetails.Customer.Address1, @Model.TimeSheetGeneralDetails.Customer.Address2<br>@Model.TimeSheetGeneralDetails.Customer.City @Model.TimeSheetGeneralDetails.Customer.State, @Model.TimeSheetGeneralDetails.Customer.ZipCode</div><br>
+                            <div><span class="invoice-top-new-tel">PH:</span> @Model.TimeSheetGeneralDetails.Customer.PhoneNumber<br>Week Ending:</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                    <div class="new-invoice-top">
+                        <div class="create-time-logo">
+                            <div>
+                                END DATE: @Convert.ToDateTime(Model.TimeSheetGeneralDetails.End_date).ToString("dd/MMM/yyyy")<br>
+                                <a href="/Timesheets/ExportInExcel?ids=@Model.TimeSheetGeneralDetails.Id" class="btn btn-success btn-xs waves-effect waves-light">Download</a>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <br /><br />
+
+            </div>
+            <div class="table-responsive" data-pattern="priority-columns">
+                <table id="tech-companies-1" class="table table-small-font table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            @*<th>First Name</th>
+                                <th>Emp #</th>*@
+                            <th data-priority="1">RT</th>
+                            @for (int i = 0; i < 7; i++)
+                            {
+                                DateTime input = Convert.ToDateTime(Model.TimeSheetGeneralDetails.End_date);
+                                input = input.AddDays(-7);
+                                int delta = DayOfWeek.Monday - input.DayOfWeek;
+                                DateTime monday = input.AddDays(delta + i);
+                                <th data-priority="@i" style="text-align:center!important">@monday.ToString("ddd") <br /><span id='date_@i'>@monday.ToString("MM/dd")</span></th>
+                            }
+                            <th data-priority="6">Total</th>
+                            @*<th data-priority="6">Rate Performance</th>*@
+                            <th data-priority="6">Initial Here</th>
+                        </tr>
+                    </thead>
+                    <tbody id="EmpTr">
+                        @{
+                            int employeeCounter = 0;
+                            foreach (var item in Model.TimeSheetSummary)
+                            {
+                                employeeCounter++;
+                                counter++;
+                                <tr>
+                                    <td><input type="text" alt="@item.Employee_id" class="form-control ui-autocomplete ui-autocomplete-input" value="@item.Employee.First_name @item.Employee.Middle_name @item.Employee.Last_name" id="EmployeeId_@employeeCounter"><input type="text" hidden value="@item.Employee.Id" id="id_EmployeeId_@employeeCounter" /></td>
+                                    @*<td>@item.Employee.First_name</td>
+                                        <td>@item.Employee.User_id</td>*@
+                                    <td><input type="number" min="0" value="@item.Rate" id="EmployeeRate_@employeeCounter" style="width:45px!important; height:39px!important" class="form-control"></td>
+                                    @*@{
+                                        var Detailslist = Model.TimeSheetDetails.Where(s => s.Employee_id == item.Employee_id).ToList();
+                                        int hourCounter = 0;
+                                        foreach (var itemDetail in Detailslist)
+                                        {
+                                            hourCounter++;
+                                            string thisId = "EmployeeId_" + employeeCounter + "_Day_" + hourCounter;
+                                            HoursCounter = HoursCounter + Convert.ToInt32(itemDetail.Hours);
+                                            <td><input type="text" class="form-control new-form-control" style="width: 66px !important; text-align:center!important" placeholder="" value="@itemDetail.Hours" id="@thisId" alt="@itemDetail.Id" onchange="UpdateHours(@employeeCounter)"></td>
+                                        }
+                                    }*@
+
+
+                                    <td><input type="number" class="form-control new-form-control" style="width: 66px !important; text-align:center!important" placeholder="@item.Hours_day_1" value="@item.Hours_day_1" id="Day_1_EmployeeId_@employeeCounter" alt="@item.Id" onchange="UpdateHours(@employeeCounter)"></td>
+                                    <td><input type="number" class="form-control new-form-control" style="width: 66px !important; text-align:center!important" placeholder="@item.Hours_day_2" value="@item.Hours_day_2" id="Day_2_EmployeeId_@employeeCounter" alt="@item.Id" onchange="UpdateHours(@employeeCounter)"></td>
+                                    <td><input type="number" class="form-control new-form-control" style="width: 66px !important; text-align:center!important" placeholder="@item.Hours_day_3" value="@item.Hours_day_3" id="Day_3_EmployeeId_@employeeCounter" alt="@item.Id" onchange="UpdateHours(@employeeCounter)"></td>
+                                    <td><input type="number" class="form-control new-form-control" style="width: 66px !important; text-align:center!important" placeholder="@item.Hours_day_4" value="@item.Hours_day_4" id="Day_4_EmployeeId_@employeeCounter" alt="@item.Id" onchange="UpdateHours(@employeeCounter)"></td>
+                                    <td><input type="number" class="form-control new-form-control" style="width: 66px !important; text-align:center!important" placeholder="@item.Hours_day_5" value="@item.Hours_day_5" id="Day_5_EmployeeId_@employeeCounter" alt="@item.Id" onchange="UpdateHours(@employeeCounter)"></td>
+                                    <td><input type="number" class="form-control new-form-control" style="width: 66px !important; text-align:center!important" placeholder="@item.Hours_day_6" value="@item.Hours_day_6" id="Day_6_EmployeeId_@employeeCounter" alt="@item.Id" onchange="UpdateHours(@employeeCounter)"></td>
+                                    <td><input type="number" class="form-control new-form-control" style="width: 66px !important; text-align:center!important" placeholder="@item.Hours_day_7" value="@item.Hours_day_7" id="Day_7_EmployeeId_@employeeCounter" alt="@item.Id" onchange="UpdateHours(@employeeCounter)"></td>
+                                   
+
+
+                                    <td><input type="text" style="width: 66px !important; text-align:center!important" class="form-control new-form-control" placeholder="@item.Total_hours" value="@item.Total_hours" disabled id="EmployeeTotalHours_@employeeCounter"></td>
+                                    <td hidden>
+                                        <div class="form-group margin-bottom-20">
+
+
+                                            @{
+                                                List<SelectListItem> listItems = new List<SelectListItem>();
+                                                listItems.Add(new SelectListItem
+                                                {
+                                                    Text = "0",
+                                                    Value = "0",
+                                                    Selected = item.Rating_by_client == 0 ? true : false
+                                                });
+                                                listItems.Add(new SelectListItem
+                                                {
+                                                    Text = "1",
+                                                    Value = "1",
+                                                    Selected = item.Rating_by_client == 1 ? true : false
+                                                });
+                                                listItems.Add(new SelectListItem
+                                                {
+                                                    Text = "2",
+                                                    Value = "2",
+                                                    Selected = item.Rating_by_client == 2 ? true : false
+                                                });
+                                                listItems.Add(new SelectListItem
+                                                {
+                                                    Text = "3",
+                                                    Value = "3",
+                                                    Selected = item.Rating_by_client == 3 ? true : false
+                                                });
+                                                listItems.Add(new SelectListItem
+                                                {
+                                                    Text = "4",
+                                                    Value = "4",
+                                                    Selected = item.Rating_by_client == 4 ? true : false
+                                                });
+                                                listItems.Add(new SelectListItem
+                                                {
+                                                    Text = "5",
+                                                    Value = "5",
+                                                    Selected = item.Rating_by_client == 5 ? true : false
+                                                });
+                                            }
+
+                                            @Html.DropDownListFor(model => item.Rating_by_client, listItems, htmlAttributes: new { @class = "form-control js-example-basic-single", @id = "Rating_by_client_" + counter, @alt = item.Id })
+
+                                        </div>
+                                    </td>
+                                    <td><input type="text" style="width:66px !important; text-align:center!important" class="form-control new-form-control" placeholder="@item.Enitial" value="@item.Enitial" id="EmployeeEnitial_@employeeCounter"></td>
+
+                                </tr>
+                                                }
+
+
+                        }
+
+                        <tr>
+                            <th colspan="2">Total Hours</th>
+                            <td><input type="text" style="width:66px !important; text-align:center!important" class="form-control new-form-control" value="0" placeholder="0" id="MondayTotalHours" disabled></td>
+                            <td><input type="text" style="width:66px !important; text-align:center!important" class="form-control new-form-control" value="0" placeholder="0" id="TuesdayTotalHours" disabled></td>
+                            <td><input type="text" style="width:66px !important; text-align:center!important" class="form-control new-form-control" value="0" placeholder="0" id="WednesdayTotalHours" disabled></td>
+                            <td><input type="text" style="width:66px !important; text-align:center!important" class="form-control new-form-control" value="0" placeholder="0" id="ThursdayTotalHours" disabled></td>
+                            <td><input type="text" style="width:66px !important; text-align:center!important" class="form-control new-form-control" value="0" placeholder="0" id="FridayTotalHours" disabled></td>
+                            <td><input type="text" style="width:66px !important; text-align:center!important" class="form-control new-form-control" value="0" placeholder="0" id="SaturdayTotalHours" disabled></td>
+                            <td><input type="text" style="width:66px !important; text-align:center!important" class="form-control new-form-control" value="0" placeholder="0" id="SundayTotalHours" disabled></td>
+                            <td><input type="text" style="width:66px !important; text-align:center!important" class="form-control new-form-control" id="EmployeesTotalHours" value="0" placeholder="0" disabled></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <th colspan="2">Numbers of People</th>
+                            @*<td></td>*@
+                            <td><input type="text" style="width:66px !important; text-align:center!important" id="MondayTotalEmployees" value="0" class="form-control new-form-control" placeholder="0" disabled></td>
+                            <td><input type="text" style="width:66px !important; text-align:center!important" id="TuesdayTotalEmployees" value="0" class="form-control new-form-control" placeholder="0" disabled></td>
+                            <td><input type="text" style="width:66px !important; text-align:center!important" id="WednesdayTotalEmployees" value="0" class="form-control new-form-control" placeholder="0" disabled></td>
+                            <td><input type="text" style="width:66px !important; text-align:center!important" id="ThursdayTotalEmployees" value="0" class="form-control new-form-control" placeholder="0" disabled></td>
+                            <td><input type="text" style="width:66px !important; text-align:center!important" id="FridayTotalEmployees" value="0" class="form-control new-form-control" placeholder="0" disabled></td>
+                            <td><input type="text" style="width:66px !important; text-align:center!important" id="SaturdayTotalEmployees" value="0" class="form-control new-form-control" placeholder="0" disabled></td>
+                            <td><input type="text" style="width:66px !important; text-align:center!important" id="SundayTotalEmployees" value="0" class="form-control new-form-control" placeholder="0" disabled></td>
+                            <td><input type="text" style="width:66px !important; text-align:center!important" class="form-control new-form-control" id="TotalEmployees" placeholder="1" value="1" disabled></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="new-forms-buttons">
+                @*<button type="button" class="btn btn-success btn-xs waves-effect waves-light">Save As draft</button>*@
+                <button type="button" class="btn btn-success btn-xs waves-effect waves-light" onclick="AddRow()">Add Row</button>
+                <button type="button" class="btn btn-primary btn-xs waves-effect waves-light" onclick="UpdateTimeSheet()">Save Changes</button>
+            </div>
+            <div class="bottom-text">
+                <input type="text" id="signatures" value="@Model.TimeSheetGeneralDetails.Signature" style="border-style:solid; text-align:center" />
+
+                <h4>Authorized Signature<i></i></h4>
+                <p>Please email to payroll@4tssi.com on Monday's before 10:am</p>
+
+            </div>
+            <div class="new-comment-section">
+                <label for="male">Comment</label>
+                <textarea value="@Model.TimeSheetGeneralDetails.Note" id="comment" class="form-control" style="padding:0px 0px 0px 0px!important">@Model.TimeSheetGeneralDetails.Note</textarea>
+
+            </div>
+        </div>
+
+        <!-- /.box-content -->
+    </div>
+    <!-- /.col-lg-6 col-xs-12 -->
+</div>
+
+<input type="text" hidden id="NewlyAdded" value="0" />
+
+<input type="text" hidden id="idsaver" />
+
+<div id="wait" style="display:none;width:69px;height:89px;border:1px solid black;position:absolute;top:45%;left:45%;padding:2px;"><img src='~/assets/loading_gif.gif' width="64" height="64" /><br>Loading..</div>
+<input type="text" hidden style="display:none" id="totalNoOfEmployees" value="1" />
+
+
+<script>
+    $(document).ready(function() {
+        $(document).ajaxStart(function () {
+            $("#wait").css("display", "block");
+            var screenTop = $(document).scrollTop();
+            $('#wait').css('top', screenTop + 320);
+        });
+        $(document).ajaxComplete(function () {
+            $("#wait").css("display", "none");
+        });
+        $("button").click(function () {
+            $("#txt").load("demo_ajax_load.asp");
+        });
+        $("#TotalEmployees").val(@counter);
+        $("#totalNoOfEmployees").val(@counter);
+
+        $("#EmployeesTotalHours").attr("placeholder",@HoursCounter);
+        $("#EmployeesTotalHours").val(@HoursCounter);
+        // updateEntries();
+        updateEntries1();
+        $('.js-example-basic-multiple').select2();
+        $('.js-example-basic-single').select2();
+
+
+        $('[data-toggle=\'tooltip\']').tooltip({ container: 'body' });
+        $(function () {
+            for (var i = 1; i <= @Model.TimeSheetSummary.Count; i++) {
+                $("#EmployeeId_"+i).autocomplete({
+                    source: function (request, response) {$("#idsaver").val($(this.element).prop("id"));
+                        $.ajax({
+                            url: "/TSSManage/SearchEmployees",
+                            type: "GET",
+                            dataType: "json",
+                            data: { query: request.term },
+                            success: function (data) {
+                                response($.map(data,
+                                    function (item) {
+                                        return { label: item.Name, value: item.Id };
+                                    }));
+
+                            }
+                        });
+
+
+                    },
+                    select: function (event, ui) {
+                        AutoCompleteSelectHandler(event, ui, $("#idsaver").val())
+                    },
+                    messages: {
+                        noResults: "",
+                        results: function(count) {
+                            return count + (count > 1 ? ' results' : ' result ') + ' found';
+                        }
+                    }
+                });
+            }
+
+        } );
+
+
+    });
+
+
+    function updateEntries1()
+    {
+        var totalemp = parseFloat($("#totalNoOfEmployees").val());
+        var mondays = 0;
+        var tuesdays = 0;
+        var wednesdays =  0;
+        var thursdays = 0;
+        var fridays =  0;
+        var saturdays = 0;
+        var sundays =  0;
+        var mondaysEmpCount = 0;
+        var tuesdaysEmpCount = 0;
+        var wednesdaysEmpCount =  0;
+        var thursdaysEmpCount = 0;
+        var fridaysEmpCount =  0;
+        var saturdaysEmpCount = 0;
+        var sundaysEmpCount =  0;
+        var totalWorkingEmployees = 0;
+
+        var totalnewemp = parseFloat($("#NewlyAdded").val());
+        for(i = 1; i<= totalnewemp; i++)
+        {
+            if($("#day_1_"+i).val() != '')
+            {
+                mondays = mondays+ parseFloat($("#day_1_"+i).val());
+            }
+            ////////////////////////////////////////////////////////////////////////
+
+            if($("#day_2_"+i).val()  != '')
+            {
+                tuesdays = tuesdays+ parseFloat($("#day_2_"+i).val());
+
+            }
+            ////////////////////////////////////////////////////////////////////////
+            if($("#day_3_"+i).val()  != '')
+            {
+                wednesdays = wednesdays+ parseFloat($("#day_3_"+i).val());
+            }
+            ////////////////////////////////////////////////////////////////////////
+
+            if($("#day_4_"+i).val()  != '')
+            {
+                thursdays  = thursdays+ parseFloat($("#day_4_"+i).val());
+            }
+            ////////////////////////////////////////////////////////////////////////
+
+            if($("#day_5_"+i).val()  != '')
+            {
+                fridays = fridays+ parseFloat($("#day_5_"+i).val());
+            }
+            ////////////////////////////////////////////////////////////////////////
+
+            if($("#day_6_"+i).val()  != '')
+            {
+                saturdays = saturdays+ parseFloat($("#day_6_"+i).val());
+            }
+            ////////////////////////////////////////////////////////////////////////
+
+            if($("#day_7_"+i).val()  != '')
+            {
+                sundays = sundays+ parseFloat($("#day_7_"+i).val());
+            }
+            ////////////////////////////////////////////////////////////////////////
+
+            if(parseFloat($("#day_1_"+i).val()) > 0)
+                mondaysEmpCount = mondaysEmpCount+ 1;
+            if(parseFloat($("#day_2_"+i).val()) > 0)
+                tuesdaysEmpCount = tuesdaysEmpCount+ 1;
+            if(parseFloat($("#day_3_"+i).val()) > 0)
+                wednesdaysEmpCount = wednesdaysEmpCount+ 1;
+            if(parseFloat($("#day_4_"+i).val()) > 0)
+                thursdaysEmpCount  = thursdaysEmpCount+ 1;
+            if(parseFloat($("#day_5_"+i).val()) > 0)
+                fridaysEmpCount = fridaysEmpCount+ 1;
+            if(parseFloat($("#day_6_"+i).val()) > 0)
+                saturdaysEmpCount = saturdaysEmpCount+ 1;
+            if(parseFloat($("#day_7_"+i).val()) > 0)
+                sundaysEmpCount = sundaysEmpCount+ 1;
+
+        }
+
+        for(i = 1; i<= (totalemp - totalnewemp); i++)
+        {
+            if ($("#Day_1_EmployeeId_"+i).val() != '') {
+                mondays = mondays+ parseFloat($("#Day_1_EmployeeId_"+i).val());
+            }
+
+
+            ///////////////////////////////////////////////////////////////////////////////////////////////
+            if ($("#Day_2_EmployeeId_"+i).val() != '') {
+                tuesdays = tuesdays+ parseFloat($("#Day_2_EmployeeId_"+i).val());
+            }
+            ///////////////////////////////////////////////////////////////////////////////////////////////
+
+            if ($("#Day_3_EmployeeId_"+i).val() != '') {
+                wednesdays = wednesdays+ parseFloat($("#Day_3_EmployeeId_"+i).val());
+            }
+            ///////////////////////////////////////////////////////////////////////////////////////////////
+
+            if ($("#Day_4_EmployeeId_"+i).val() != '') {
+                thursdays  = thursdays+ parseFloat($("#Day_4_EmployeeId_"+i).val());
+            }
+            ///////////////////////////////////////////////////////////////////////////////////////////////
+
+            if ($("#Day_5_EmployeeId_"+i).val() != '') {
+                fridays = fridays+ parseFloat($("#Day_5_EmployeeId_"+i).val());
+            }
+            ///////////////////////////////////////////////////////////////////////////////////////////////
+
+            if ($("#Day_6_EmployeeId_"+i).val() != '') {
+                saturdays = saturdays+ parseFloat($("#Day_6_EmployeeId_"+i).val());
+            }
+            ///////////////////////////////////////////////////////////////////////////////////////////////
+
+            if ($("#Day_7_EmployeeId_"+i).val() != '') {
+                sundays = sundays+ parseFloat($("#Day_7_EmployeeId_"+i).val());
+            }
+            ///////////////////////////////////////////////////////////////////////////////////////////////
+
+            if(parseFloat($("#Day_1_EmployeeId_"+i).val()) > 0)
+            {
+                mondaysEmpCount = mondaysEmpCount+ 1;
+                if(mondaysEmpCount > totalWorkingEmployees)
+                {
+                    totalWorkingEmployees = mondaysEmpCount
+                }
+            }
+            if(parseFloat($("#Day_2_EmployeeId_"+i).val()) > 0)
+            {
+                tuesdaysEmpCount = tuesdaysEmpCount+ 1;
+                if(tuesdaysEmpCount > totalWorkingEmployees)
+                {
+                    totalWorkingEmployees = tuesdaysEmpCount
+                }
+            }
+            if(parseFloat($("#Day_3_EmployeeId_"+i).val()) > 0)
+            {
+                wednesdaysEmpCount = wednesdaysEmpCount+ 1;
+                if(wednesdaysEmpCount > totalWorkingEmployees)
+                {
+                    totalWorkingEmployees = wednesdaysEmpCount
+                }
+            }
+            if(parseFloat($("#Day_4_EmployeeId_"+i).val()) > 0)
+            {
+                thursdaysEmpCount  = thursdaysEmpCount+ 1;
+                if(thursdaysEmpCount > totalWorkingEmployees)
+                {
+                    totalWorkingEmployees = thursdaysEmpCount
+                }
+            }
+            if(parseFloat($("#Day_5_EmployeeId_"+i).val()) > 0)
+            {
+                fridaysEmpCount = fridaysEmpCount+ 1;
+                if(fridaysEmpCount > totalWorkingEmployees)
+                {
+                    totalWorkingEmployees = fridaysEmpCount
+                }
+            }
+            if(parseFloat($("#Day_6_EmployeeId_"+i).val()) > 0)
+            {
+                saturdaysEmpCount = saturdaysEmpCount+ 1;
+                if(saturdaysEmpCount > totalWorkingEmployees)
+                {
+                    totalWorkingEmployees = saturdaysEmpCount
+                }
+            }
+            if(parseFloat($("#Day_7_EmployeeId_"+i).val()) > 0)
+            {
+                sundaysEmpCount = sundaysEmpCount+ 1;
+                if(sundaysEmpCount > totalWorkingEmployees)
+                {
+                    totalWorkingEmployees = sundaysEmpCount
+                }
+            }
+
+        }
+
+        var EmployeesTotHours = mondays + tuesdays+ wednesdays+ thursdays+ fridays+ saturdays+ sundays;
+        $("#EmployeesTotalHours").val(EmployeesTotHours);
+
+
+        $("#MondayTotalHours").val(mondays);
+        $("#TuesdayTotalHours").val(tuesdays);
+        $("#WednesdayTotalHours").val(wednesdays);
+        $("#ThursdayTotalHours").val(thursdays);
+        $("#FridayTotalHours").val(fridays);
+        $("#SaturdayTotalHours").val(saturdays);
+        $("#SundayTotalHours").val(sundays);
+
+
+        $("#MondayTotalEmployees").val(mondaysEmpCount);
+        $("#TuesdayTotalEmployees").val(tuesdaysEmpCount);
+        $("#WednesdayTotalEmployees").val(wednesdaysEmpCount);
+        $("#ThursdayTotalEmployees").val(thursdaysEmpCount);
+        $("#FridayTotalEmployees").val(fridaysEmpCount);
+        $("#SaturdayTotalEmployees").val(saturdaysEmpCount);
+        $("#SundayTotalEmployees").val(sundaysEmpCount);
+
+
+        //////////////////////////////////////////////////////////
+
+        var tWorkingEmp =0;
+        for(var a = 1; a <= totalemp; a++)
+        {
+            var tot = $("#EmployeeTotalHours_"+a).val();
+            if(tot > 0)
+            {
+                tWorkingEmp = tWorkingEmp + 1;
+            }
+        }
+        for(var a = 1; a <= totalnewemp; a++)
+        {
+            var tot = $("#totalHours_"+a).val();
+            if(tot > 0)
+            {
+                tWorkingEmp = tWorkingEmp + 1;
+            }
+        }
+
+        $("#TotalEmployees").val(tWorkingEmp);
+
+
+        /////////////////////////////////////////////////////////
+       // $("#TotalEmployees").val(totalWorkingEmployees);
+    }
+
+
+
+</script>
+
+
+
+
+<script>
+    function UpdateTimeSheet()
+    {
+        $("#parent_div :input").attr("disabled", true);
+        debugger;
+        var timesheet = {
+            Id: '@Model.TimeSheetGeneralDetails.Id',
+            Customer_id:'@Model.TimeSheetGeneralDetails.Id',
+            Organization_id : '@Model.TimeSheetGeneralDetails.Organization_id',
+            Start_date : '@Model.TimeSheetGeneralDetails.Created_at',
+            End_date : '@Model.TimeSheetGeneralDetails.End_date',
+            Total_employees:@Model.TimeSheetGeneralDetails.Total_employees,
+            Total_hours:@Model.TimeSheetGeneralDetails.Total_hours,
+            Submit_by_client:true,
+            Uuid:null,
+            Signature:$("signatures"),
+            Created_at:'@Model.TimeSheetGeneralDetails.Created_at',
+            Updated_at:'',
+            Note: $("#comment").val(),
+            Po_number: '@Model.TimeSheetGeneralDetails.Po_number',
+            Sent:true,
+            For_internal_employee:false
+        }
+
+        var totalemp = @Model.TimeSheetGeneralDetails.Total_employees;
+        var timeSheet_summary = [];
+        var timeSheet_DetailsList = [];
+
+
+        for (var i = 1; i <= parseFloat(totalemp) ; i++) {
+            var timeSheet_summaryDetails = {
+                Id:$("#Rating_by_client_"+i).attr("alt"),
+                Timesheet_id: @Model.TimeSheetGeneralDetails.Id,
+                Employee_id: $("#id_EmployeeId_"+i).val(),
+                Rate: $("#EmployeeRate_"+i).val(),
+                Enitial: $("#EmployeeEnitial_"+i).val(),
+                Total_hours : $("#EmployeeTotalHours_"+i).val(),
+                Created_at: '@Model.TimeSheetGeneralDetails.Created_at',
+                Updated_at:null,
+                Rating_by_client:$("#Rating_by_client_"+i).val(),
+                Hours_day_1:$("#Day_1_EmployeeId_" + i).val(),
+                Hours_day_2:$("#Day_2_EmployeeId_" + i).val(),
+                Hours_day_3:$("#Day_3_EmployeeId_" + i).val(),
+                Hours_day_4:$("#Day_4_EmployeeId_" + i).val(),
+                Hours_day_5:$("#Day_5_EmployeeId_" + i).val(),
+                Hours_day_6:$("#Day_6_EmployeeId_" + i).val(),
+                Hours_day_7:$("#Day_7_EmployeeId_" + i).val(),
+                Starting_date: '@Model.TimeSheetSummary[0].Starting_date',
+                Ending_date: '@Model.TimeSheetSummary[0].Ending_date',
+                Starting_day_of_week: '@Model.TimeSheetSummary[0].Starting_day_of_week',
+                Ending_day_of_week: '@Model.TimeSheetSummary[0].Ending_day_of_week'
+            }
+            timeSheet_summary.push(timeSheet_summaryDetails);
+        }
+
+
+        @*for (var i = 1; i <= parseFloat(totalemp) ; i++) {
+
+            for (var j = 1; j <= 7 ; j++) {
+
+                var timeSheet_details = {
+                    Id:$("#EmployeeId_"+i+"_Day_"+j).attr("alt"),
+                    Timesheet_id: @Model.TimeSheetGeneralDetails.Id,
+                    Employee_id:$("#id_EmployeeId_"+i).val(),
+                    Day:j,
+                    Hours:$("#EmployeeId_"+i+"_Day_"+j).val(),
+                    Created_at:'@Model.TimeSheetGeneralDetails.Created_at',
+                    Updated_at:null
+
+                }
+                timeSheet_DetailsList.push(timeSheet_details);
+            }
+        }*@
+
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        var newEmp = $("#NewlyAdded").val();
+        var timeSheet_summary_NewEntries = [];
+
+
+        for (var i = 1; i <= parseFloat(newEmp) ; i++) {
+            var timeSheet_summaryDetails_NewEntries = {
+                Timesheet_id: null,
+                Employee_id: $("#id_selected_employee_"+i).val(),
+                Rate: $("#rate_"+i).val(),
+                Enitial: $("#enitials_"+i).val(),
+                Total_hours : $("#totalHours_"+i).val(),
+                Created_at: Date(),
+                Updated_at:null,
+                Rating_by_client:null,
+                Hours_day_1:$("#day_1_" + i).val(),
+                Hours_day_2:$("#day_2_" + i).val(),
+                Hours_day_3:$("#day_3_" + i).val(),
+                Hours_day_4:$("#day_4_" + i).val(),
+                Hours_day_5:$("#day_5_" + i).val(),
+                Hours_day_6:$("#day_6_" + i).val(),
+                Hours_day_7:$("#day_7_" + i).val(),
+                Starting_date: '@Model.TimeSheetSummary[0].Starting_date',
+                Ending_date: '@Model.TimeSheetSummary[0].Ending_date',
+                Starting_day_of_week: '@Model.TimeSheetSummary[0].Starting_day_of_week',
+                Ending_day_of_week: '@Model.TimeSheetSummary[0].Ending_day_of_week'
+            }
+            timeSheet_summary_NewEntries.push(timeSheet_summaryDetails_NewEntries);
+        }
+        //var timeSheet_DetailsList_NewEntries = [];
+
+
+        //for (var i = 1; i <= parseFloat(newEmp) ; i++) {
+
+        //    for (var j = 1; j <= 7 ; j++) {
+        //        var hoursPerDay = 0;
+        //        if(j == 1)
+        //        {
+        //            hoursPerDay = $("#day_1_" + i).val();
+        //        }
+        //        else if(j == 2)
+        //        {
+        //            hoursPerDay = $("#day_2_" + i).val();
+        //        }
+        //        else if(j == 3)
+        //        {
+        //            hoursPerDay = $("#day_3_" + i).val();
+        //        }
+        //        else if(j == 4)
+        //        {
+        //            hoursPerDay = $("#day_4_" + i).val();
+        //        }
+        //        else if(j == 5)
+        //        {
+        //            hoursPerDay = $("#day_5_" + i).val();
+        //        }
+        //        else if(j == 6)
+        //        {
+        //            hoursPerDay = $("#day_6_" + i).val();
+        //        }
+        //        else if(j == 7)
+        //        {
+        //            hoursPerDay = $("#day_7_" + i).val();
+        //        }
+
+        //        var timeSheet_details_NewEntries = {
+        //            Timesheet_id: null,
+        //            Employee_id:$("#id_selected_employee_"+i).val(),
+        //            Day:j,
+        //            Hours:parseFloat(hoursPerDay),
+        //            Created_at:Date(),
+        //            Updated_at:Date()
+
+        //        }
+        //        timeSheet_DetailsList_NewEntries.push(timeSheet_details_NewEntries);
+        //    }
+        //}
+
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+        debugger;
+         $.ajax({
+            type: 'POST',
+            data: JSON.stringify({timesheet: timesheet, timeSheet_summary:timeSheet_summary, timeSheet_summary_NewEntries:timeSheet_summary_NewEntries}),
+            url: '@Url.Action("EditTimeSheetDetails", "Timesheets")',
+            dataType: "json",
+            contentType: 'application/json; charset=utf-8',
+            success: function(data) {
+                window.location = "/TSSManage/TimeSheetSuccessSubmit";
+            },
+            error: function(req, status, errorObj) {
+                alert(errorObj.toString());
+            }
+        });
+    }
+
+
+    function UpdateHours(employeeCounter)
+    {
+        var totalhours = 0;
+        for(var counter = 1; counter <= 7; counter++)
+        {
+            if($("#EmployeeId_"+employeeCounter+"_Day_"+counter).val() != '')
+            {
+                var hours = parseFloat($("#EmployeeId_"+employeeCounter+"_Day_"+counter).val());
+                totalhours = totalhours + hours;
+            }
+        }
+        $("#EmployeeTotalHours_"+employeeCounter).val(totalhours);
+        updateEntries1();
+    }
+
+    function UpdateNewEntryHours(newEmployeeCounter)
+    {
+        var totalhours = 0;
+        if($("#day_1_"+newEmployeeCounter).val() != '')
+        {
+            totalhours = totalhours+ parseFloat($("#day_1_"+newEmployeeCounter).val());
+        }
+        ///////////////////////////////////////////////////////////////////////////////////////
+        if ($("#day_2_"+newEmployeeCounter).val()  != '')
+        {
+            totalhours = totalhours+ parseFloat($("#day_2_"+newEmployeeCounter).val());
+        }
+        ///////////////////////////////////////////////////////////////////////////////////////
+
+        if ($("#day_3_"+newEmployeeCounter).val() != '')
+
+        {
+            totalhours = totalhours+ parseFloat($("#day_3_"+newEmployeeCounter).val());
+        }
+        ///////////////////////////////////////////////////////////////////////////////////////
+
+        if ($("#day_4_"+newEmployeeCounter).val()  != '')
+        {
+            totalhours = totalhours+ parseFloat($("#day_4_"+newEmployeeCounter).val());
+        }
+        ///////////////////////////////////////////////////////////////////////////////////////
+
+        if ($("#day_5_"+newEmployeeCounter).val()  != '')
+        {
+            totalhours = totalhours+ parseFloat($("#day_5_"+newEmployeeCounter).val());
+        }
+        ///////////////////////////////////////////////////////////////////////////////////////
+
+        if ($("#day_6_"+newEmployeeCounter).val() != '')
+        {
+            totalhours = totalhours+ parseFloat($("#day_6_"+newEmployeeCounter).val());
+        }
+        ///////////////////////////////////////////////////////////////////////////////////////
+
+        if ($("#day_7_"+newEmployeeCounter).val()  != '')
+        {
+            totalhours = totalhours+ parseFloat($("#day_7_"+newEmployeeCounter).val());
+        }
+        ///////////////////////////////////////////////////////////////////////////////////////
+
+        $("#totalHours_"+newEmployeeCounter).val(totalhours);
+        updateEntries1();
+    }
+
+</script>
+
+<script>
+    function AutoCompleteSelectHandler(event, ui, id) {
+        var selectedObjVal = ui.item.value;
+        var selectedObjLabel = ui.item.label;
+        //var thisid = "#id_"+id;
+        $("#id_"+id).val(selectedObjVal);
+        $("#"+id).val(selectedObjLabel);
+
+    }
+
+    function AddRow()
+    {
+        var totalemp = $("#totalNoOfEmployees").val();
+        var incemp = parseFloat(totalemp) + 1;
+        var dropdownid = "selected_employee_"+incemp;
+        $("#totalNoOfEmployees").val(incemp);
+        var newEmp = parseFloat($("#NewlyAdded").val());
+        newEmp = newEmp + 1;
+        $("#NewlyAdded").val(newEmp);
+        var dropdownhtml = "@Html.Raw(ViewBag.DropDownHtml)";
+        $("#EmpTr").prepend('<tr><th colspan="1" style="width: 230px"><input type="text" class="form-control ui-autocomplete" id="selected_employee_'+newEmp+'" placeholder="Search Employees.."/><input type="text" hidden id="id_selected_employee_'+newEmp+'"/></th><td><input type="number" class="form-control new-form-control" placeholder="" id="rate_'+ newEmp+'"></td><td><input type="number" class="form-control new-form-control" placeholder="" value="" style="width:66px !important; text-align:center!important"  onchange="UpdateNewEntryHours('+ newEmp+')" id="day_1_'+ newEmp+'"></td><td><input type="number" class="form-control new-form-control" placeholder="" value="" style="width:66px !important; text-align:center!important"  onchange="UpdateNewEntryHours('+ newEmp+')" id="day_2_'+ newEmp+'"></td><td><input type="number" class="form-control new-form-control" placeholder="" value="" style="width:66px !important; text-align:center!important"  onchange="UpdateNewEntryHours('+ newEmp+')" id="day_3_'+ newEmp+'"></td><td><input type="number" class="form-control new-form-control" placeholder="" value="" style="width:66px !important; text-align:center!important"  onchange="UpdateNewEntryHours('+ newEmp+')" id="day_4_'+ newEmp+'"></td><td><input type="number" class="form-control new-form-control" placeholder="" value="" style="width:66px !important; text-align:center!important"  onchange="UpdateNewEntryHours('+ newEmp+')" id="day_5_'+ newEmp+'"></td><td><input type="number" class="form-control new-form-control" placeholder="" value="" style="width:66px !important; text-align:center!important"  onchange="UpdateNewEntryHours('+ newEmp+')" id="day_6_'+ newEmp+'"></td><td><input type="number" class="form-control new-form-control" placeholder="" value="" style="width:66px !important; text-align:center!important"  onchange="UpdateNewEntryHours('+ newEmp+')" id="day_7_'+ newEmp+'"></td><td><input type="number" class="form-control new-form-control" placeholder="" value="" style="width:66px !important; text-align:center!important"  onchange="UpdateNewEntryHours('+ newEmp+')" id="totalHours_'+ newEmp+'" disabled></td><td><input type="text" class="form-control new-form-control" placeholder="" style="width:66px !important; text-align:center!important" id="enitials_'+ newEmp+'"></td></tr>')
+        $("#selected_employee_"+newEmp).autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: "/TSSManage/SearchEmployees",
+                    type: "GET",
+                    dataType: "json",
+                    data: { query: $("#selected_employee_"+newEmp).val() },
+                    success: function (data) {
+                        response($.map(data,
+                            function (item) {
+                                return { label: item.Name, value: item.Id };
+                            }));
+
+                    }
+                });
+
+
+            },
+            select: function (event, ui) {
+                AutoCompleteSelectHandler(event, ui, 'selected_employee_'+newEmp)
+            },
+            messages: {
+                noResults: "",
+                results: function(count) {
+                    return count + (count > 1 ? ' results' : ' result ') + ' found';
+                }
+            }
+        });
+        $("#dropdownid").attr("id", "selected_employee_"+newEmp);
+    }
+
+
+
+
+</script>

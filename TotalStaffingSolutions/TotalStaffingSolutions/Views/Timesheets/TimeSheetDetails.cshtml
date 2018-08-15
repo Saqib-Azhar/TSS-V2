@@ -1,0 +1,495 @@
+﻿@using TotalStaffingSolutions.Models
+@model TotalStaffingSolutions.Models.TimesheetObjectTuple
+@{
+    //ViewBag.Title = "Time Sheet Details";
+    int counter = 0;
+    int HoursCounter = 0;
+}
+<script src="~/assets/scripts/jquery.min.js"></script>
+<style>
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+</style>
+<div class="row small-spacing" id="parent_div">
+    <div class="col-xs-12">
+        <div class="box-content">
+            <div class="row new-main-invoice">
+                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 create-time-text">
+                    @if (ViewBag.DisplayPicture != "" && ViewBag.DisplayPicture != null)
+                    {
+                        <img alt="logo" style="width:150px; height:150px" src="~/ProfileImages/@ViewBag.DisplayPicture">
+                    }
+                    else
+                    {
+                        <img alt="logo" style="width:150px; height:150px" src="~/assets/Image-not-available.png">
+                    }
+                </div>
+                <div class="col-lg-5 col-md-5 col-sm-5 col-xs-12">
+                    <div class="new-invoice-top2">
+                        <div class="create-time-logo2">
+                            <div><b>@Model.TimeSheetGeneralDetails.Customer.Name</b><br>@Model.TimeSheetGeneralDetails.Customer.Address1, @Model.TimeSheetGeneralDetails.Customer.Address2<br>@Model.TimeSheetGeneralDetails.Customer.City @Model.TimeSheetGeneralDetails.Customer.State, @Model.TimeSheetGeneralDetails.Customer.ZipCode</div><br>
+                            <div><span class="invoice-top-new-tel">PH:</span> @Model.TimeSheetGeneralDetails.Customer.PhoneNumber<br>PO Number: @Model.TimeSheetGeneralDetails.Po_number</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                    <div class="new-invoice-top">
+                        <div class="create-time-logo">
+                            <div>
+                                END DATE: @Convert.ToDateTime(Model.TimeSheetGeneralDetails.End_date).ToString("dd/MMM/yyyy")<br>
+                                <a href="/Timesheets/ExportInExcel?ids=@Model.TimeSheetGeneralDetails.Id" class="btn btn-success btn-xs waves-effect waves-light">Download</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <br /><br />
+
+            </div>
+            <div class="table-responsive" data-pattern="priority-columns">
+                <table id="tech-companies-1" class="table table-small-font table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Last Name</th>
+                            <th>First Name</th>
+                            <th>Emp #</th>
+                            <th data-priority="1">RT</th>
+                            @for (int i = 0; i < 7; i++)
+                            {
+                                DateTime input = Convert.ToDateTime(Model.TimeSheetGeneralDetails.End_date);
+                                input = input.AddDays((-6+i));
+                                //int delta = DayOfWeek.Monday - input.DayOfWeek;
+                                DateTime monday = input;
+                                <th data-priority="@i" style="text-align:center!important">@monday.ToString("ddd") <br /><span id='date_@i'>@monday.ToString("MM/dd")</span></th>
+                            }
+                            <th data-priority="6">Total</th>
+                            <th data-priority="6">Rate Performance</th>
+                            <th data-priority="6">Initial Here</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int rateitem = 0;
+                            int employeeCounter = 0;
+                            foreach (var item in Model.TimeSheetSummary)
+                            {
+
+                                //if (item.Rate != null && item.Rate != "")
+                                //{
+
+                                //    rateitem = item.Rate;
+                                //}
+                                employeeCounter++;
+                                counter++;
+                                <tr>
+                                    <td><input type="text" value="@item.Employee_id" hidden id="EmployeeId_@employeeCounter">@item.Employee.Last_name</td>
+                                    <td>@item.Employee.First_name</td>
+                                    <td>@item.Employee.User_id</td>
+
+                                    @{
+                                        if (item.Rate == "" || item.Rate == null)
+                                        {
+                                            item.Rate = "0";
+
+                                        }
+                                        string thisId = "EmployeeId_" + employeeCounter + "_Day_";
+
+                                    }
+                                    <td><input type="number" value="@item.Rate" hidden id="EmployeeRate_@employeeCounter">@item.Rate</td>
+                                    <td><input type="number" class="form-control new-form-control" style="width: 45px !important; text-align:center!important; padding:0px 0px 0px 0px!important" placeholder="@item.Hours_day_1" value="@item.Hours_day_1" id="Day_1_EmployeeId_@employeeCounter" alt="@item.Id" onchange="UpdateHours('Day_1_EmployeeId_@employeeCounter',@employeeCounter)"></td>
+                                    <td><input type="number" class="form-control new-form-control" style="width: 45px !important; text-align:center!important; padding:0px 0px 0px 0px!important" placeholder="@item.Hours_day_2" value="@item.Hours_day_2" id="Day_2_EmployeeId_@employeeCounter" alt="@item.Id" onchange="UpdateHours('Day_2_EmployeeId_@employeeCounter',@employeeCounter)"></td>
+                                    <td><input type="number" class="form-control new-form-control" style="width: 45px !important; text-align:center!important; padding:0px 0px 0px 0px!important" placeholder="@item.Hours_day_3" value="@item.Hours_day_3" id="Day_3_EmployeeId_@employeeCounter" alt="@item.Id" onchange="UpdateHours('Day_3_EmployeeId_@employeeCounter',@employeeCounter)"></td>
+                                    <td><input type="number" class="form-control new-form-control" style="width: 45px !important; text-align:center!important; padding:0px 0px 0px 0px!important" placeholder="@item.Hours_day_4" value="@item.Hours_day_4" id="Day_4_EmployeeId_@employeeCounter" alt="@item.Id" onchange="UpdateHours('Day_4_EmployeeId_@employeeCounter',@employeeCounter)"></td>
+                                    <td><input type="number" class="form-control new-form-control" style="width: 45px !important; text-align:center!important; padding:0px 0px 0px 0px!important" placeholder="@item.Hours_day_5" value="@item.Hours_day_5" id="Day_5_EmployeeId_@employeeCounter" alt="@item.Id" onchange="UpdateHours('Day_5_EmployeeId_@employeeCounter',@employeeCounter)"></td>
+                                    <td><input type="number" class="form-control new-form-control" style="width: 45px !important; text-align:center!important; padding:0px 0px 0px 0px!important" placeholder="@item.Hours_day_6" value="@item.Hours_day_6" id="Day_6_EmployeeId_@employeeCounter" alt="@item.Id" onchange="UpdateHours('Day_6_EmployeeId_@employeeCounter',@employeeCounter)"></td>
+                                    <td><input type="number" class="form-control new-form-control" style="width: 45px !important; text-align:center!important; padding:0px 0px 0px 0px!important" placeholder="@item.Hours_day_7" value="@item.Hours_day_7" id="Day_7_EmployeeId_@employeeCounter" alt="@item.Id" onchange="UpdateHours('Day_7_EmployeeId_@employeeCounter',@employeeCounter)"></td>
+                                   
+                                    <td><input type="number" style="width: 60px !important; text-align:center!important; padding:0px 0px 0px 0px!important" class="form-control new-form-control" placeholder="@item.Total_hours" value="@item.Total_hours" disabled id="EmployeeTotalHours_@employeeCounter"></td>
+                                    <td>
+                                        <div class="form-group margin-bottom-20">
+
+
+                                            @{
+                                                List<SelectListItem> listItems = new List<SelectListItem>();
+                                                listItems.Add(new SelectListItem
+                                                {
+                                                    Text = "0",
+                                                    Value = "0",
+                                                    Selected = item.Rating_by_client == 0 ? true : false
+                                                });
+                                                listItems.Add(new SelectListItem
+                                                {
+                                                    Text = "1",
+                                                    Value = "1",
+                                                    Selected = item.Rating_by_client == 1 ? true : false
+                                                });
+                                                listItems.Add(new SelectListItem
+                                                {
+                                                    Text = "2",
+                                                    Value = "2",
+                                                    Selected = item.Rating_by_client == 2 ? true : false
+                                                });
+                                                listItems.Add(new SelectListItem
+                                                {
+                                                    Text = "3",
+                                                    Value = "3",
+                                                    Selected = item.Rating_by_client == 3 ? true : false
+                                                });
+                                                listItems.Add(new SelectListItem
+                                                {
+                                                    Text = "4",
+                                                    Value = "4",
+                                                    Selected = item.Rating_by_client == 4 ? true : false
+                                                });
+                                                listItems.Add(new SelectListItem
+                                                {
+                                                    Text = "5",
+                                                    Value = "5",
+                                                    Selected = item.Rating_by_client == 5 ? true : false
+                                                });
+                                            }
+
+                                            @Html.DropDownListFor(model => item.Rating_by_client, listItems, htmlAttributes: new { @class = "form-control js-example-basic-single", @id = "Rating_by_client_" + counter, @alt = item.Id })
+
+                                        </div>
+                                    </td>
+                                    @if (ViewBag.Initials == "")
+                                    {
+                                        <td><input type="text" style="width:75px!important; text-align:center!important; padding:0px 0px 0px 0px!important" class="form-control new-form-control" placeholder="@item.Enitial" value="@item.Enitial" id="EmployeeEnitial_@employeeCounter"></td>
+                                    }
+                                    else
+                                    {
+                                        <td><input type="text" style="width:75px!important; text-align:center!important; padding:0px 0px 0px 0px!important" class="form-control new-form-control" placeholder="@ViewBag.Initials" value="@ViewBag.Initials" id="EmployeeEnitial_@employeeCounter"></td>
+                                    }
+
+                                </tr>
+                                                }
+
+
+                        }
+
+                        <tr>
+                            <th colspan="4">Total Hours</th>
+                            <td><input type="text" style="width: 45px !important; text-align:center!important; padding:0px 0px 0px 0px!important" class="form-control new-form-control" value="0" placeholder="0" id="MondayTotalHours" disabled></td>
+                            <td><input type="text" style="width: 45px !important; text-align:center!important; padding:0px 0px 0px 0px!important" class="form-control new-form-control" value="0" placeholder="0" id="TuesdayTotalHours" disabled></td>
+                            <td><input type="text" style="width: 45px !important; text-align:center!important; padding:0px 0px 0px 0px!important" class="form-control new-form-control" value="0" placeholder="0" id="WednesdayTotalHours" disabled></td>
+                            <td><input type="text" style="width: 45px !important; text-align:center!important; padding:0px 0px 0px 0px!important" class="form-control new-form-control" value="0" placeholder="0" id="ThursdayTotalHours" disabled></td>
+                            <td><input type="text" style="width: 45px !important; text-align:center!important; padding:0px 0px 0px 0px!important" class="form-control new-form-control" value="0" placeholder="0" id="FridayTotalHours" disabled></td>
+                            <td><input type="text" style="width: 45px !important; text-align:center!important; padding:0px 0px 0px 0px!important" class="form-control new-form-control" value="0" placeholder="0" id="SaturdayTotalHours" disabled></td>
+                            <td><input type="text" style="width: 45px !important; text-align:center!important; padding:0px 0px 0px 0px!important" class="form-control new-form-control" value="0" placeholder="0" id="SundayTotalHours" disabled></td>
+                            <td><input type="text" style="width: 60px !important; text-align:center!important; padding:0px 0px 0px 0px!important" class="form-control new-form-control" id="EmployeesTotalHours" value="0" placeholder="0" disabled></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <th colspan="4">Numbers of People</th>
+                            @*<td></td>*@
+                            <td><input type="text" style="width: 45px !important; text-align:center!important; padding:0px 0px 0px 0px!important" id="MondayTotalEmployees" value="0" class="form-control new-form-control" placeholder="0" disabled></td>
+                            <td><input type="text" style="width: 45px !important; text-align:center!important; padding:0px 0px 0px 0px!important" id="TuesdayTotalEmployees" value="0" class="form-control new-form-control" placeholder="0" disabled></td>
+                            <td><input type="text" style="width: 45px !important; text-align:center!important; padding:0px 0px 0px 0px!important" id="WednesdayTotalEmployees" value="0" class="form-control new-form-control" placeholder="0" disabled></td>
+                            <td><input type="text" style="width: 45px !important; text-align:center!important; padding:0px 0px 0px 0px!important" id="ThursdayTotalEmployees" value="0" class="form-control new-form-control" placeholder="0" disabled></td>
+                            <td><input type="text" style="width: 45px !important; text-align:center!important; padding:0px 0px 0px 0px!important" id="FridayTotalEmployees" value="0" class="form-control new-form-control" placeholder="0" disabled></td>
+                            <td><input type="text" style="width: 45px !important; text-align:center!important; padding:0px 0px 0px 0px!important" id="SaturdayTotalEmployees" value="0" class="form-control new-form-control" placeholder="0" disabled></td>
+                            <td><input type="text" style="width: 45px !important; text-align:center!important; padding:0px 0px 0px 0px!important" id="SundayTotalEmployees" value="0" class="form-control new-form-control" placeholder="0" disabled></td>
+                            <td><input type="text" style="width: 60px !important; text-align:center!important; padding:0px 0px 0px 0px!important" class="form-control new-form-control" id="TotalEmployees" placeholder="1" value="1" disabled></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="new-forms-buttons">
+                <button type="button" class="btn btn-success btn-xs waves-effect waves-light">Save As draft</button>
+                <button type="button" class="btn btn-primary btn-xs waves-effect waves-light" onclick="UpdateTimeSheet()">Submit</button>
+                <a class="btn btn-default btn-xs waves-effect waves-light pull-right" href="/TSSManage/TimeSheetSuccessSubmit">Back to List</a>
+            </div>
+            <div class="bottom-text">
+                <input type="text" id="signatures" value="@Model.TimeSheetGeneralDetails.Signature" style="border-style:solid; text-align:center" />
+                <h4>Authorized Signature<i></i></h4>
+                <p>Please email to payroll@4tssi.com on Monday's before 10:am</p>
+
+            </div>
+            <div class="new-comment-section">
+                <label>Comment</label>
+                <textarea value="@Model.TimeSheetGeneralDetails.Note" id="comment" class="form-control" style="padding:0px 0px 0px 0px!important">@Model.TimeSheetGeneralDetails.Note</textarea>
+            </div>
+        </div>
+
+        <!-- /.box-content -->
+    </div>
+    <!-- /.col-lg-6 col-xs-12 -->
+</div>
+
+<div id="wait" style="display:none;width:69px;height:89px;border:1px solid black;position:absolute;top:45%;left:45%;padding:2px;"><img src='~/assets/loading_gif.gif' width="64" height="64" /><br>Loading..</div>
+
+<input type="text" hidden style="display:none" id="totalNoOfEmployees" value="1" />
+
+
+<script>
+    $(document).ready(function() {
+        //$("#TotalEmployees").attr("placeholder",@counter);
+        $("#TotalEmployees").val(@counter);
+        $("#totalNoOfEmployees").val(@counter);
+        $("#EmployeesTotalHours").attr("placeholder",@HoursCounter);
+        $("#EmployeesTotalHours").val(@HoursCounter);
+        // updateEntries();
+        updateEntries1();
+
+
+        $(document).ajaxStart(function () {
+            $("#wait").css("display", "block");
+            $("#parent_div :input").attr("disabled", true);
+            var screenTop = $(document).scrollTop();
+            $('#wait').css('top', screenTop + 320);
+        });
+        $(document).ajaxComplete(function () {
+            $("#wait").css("display", "none");
+        });
+        $("button").click(function () {
+            $("#txt").load("demo_ajax_load.asp");
+        });
+        if(@Model.TimeSheetGeneralDetails.Status_id == 3)
+        {
+            $("#parent_div :input").attr("disabled", true);
+    
+        }
+    });
+
+
+    function updateEntries1()
+    {
+        var totalemp = parseFloat($("#totalNoOfEmployees").val());
+        var mondays = 0;
+        var tuesdays = 0;
+        var wednesdays =  0;
+        var thursdays = 0;
+        var fridays =  0;
+        var saturdays = 0;
+        var sundays =  0;
+        var mondaysEmpCount = 0;
+        var tuesdaysEmpCount = 0;
+        var wednesdaysEmpCount =  0;
+        var thursdaysEmpCount = 0;
+        var fridaysEmpCount =  0;
+        var saturdaysEmpCount = 0;
+        var sundaysEmpCount =  0;
+        var totalWorkingEmployees = 0;
+        for(i = 1; i<= totalemp; i++)
+        {
+
+
+            if(parseFloat($("#Day_1_EmployeeId_"+i).val()) > 0)
+            {
+                mondays = mondays+ parseFloat($("#Day_1_EmployeeId_"+i).val());
+
+                mondaysEmpCount = mondaysEmpCount+ 1;
+
+                if(totalWorkingEmployees < mondaysEmpCount)
+                {
+                    totalWorkingEmployees = mondaysEmpCount
+
+                }
+            }
+            if(parseFloat($("#Day_2_EmployeeId_"+i).val()) > 0)
+            {
+                tuesdays = tuesdays+ parseFloat($("#Day_2_EmployeeId_"+i).val());
+
+                tuesdaysEmpCount = tuesdaysEmpCount+ 1;
+                if(totalWorkingEmployees < tuesdaysEmpCount)
+                {
+                    totalWorkingEmployees = tuesdaysEmpCount
+
+                }
+            }
+            if(parseFloat($("#Day_3_EmployeeId_"+i).val()) > 0)
+            {
+                wednesdays = wednesdays+ parseFloat($("#Day_3_EmployeeId_"+i).val());
+
+                wednesdaysEmpCount = wednesdaysEmpCount+ 1;
+                if(totalWorkingEmployees < wednesdaysEmpCount)
+                {
+                    totalWorkingEmployees = wednesdaysEmpCount
+
+                }
+            }
+            if(parseFloat($("#Day_4_EmployeeId_"+i).val()) > 0)
+            {
+                thursdays  = thursdays+ parseFloat($("#Day_4_EmployeeId_"+i).val());
+
+                thursdaysEmpCount  = thursdaysEmpCount+ 1;
+                if(totalWorkingEmployees < thursdaysEmpCount)
+                {
+                    totalWorkingEmployees = thursdaysEmpCount
+
+                }
+            }
+            if(parseFloat($("#Day_5_EmployeeId_"+i).val()) > 0)
+            {
+                fridays = fridays+ parseFloat($("#Day_5_EmployeeId_"+i).val());
+
+                fridaysEmpCount = fridaysEmpCount+ 1;
+                if(totalWorkingEmployees < fridaysEmpCount)
+                {
+                    totalWorkingEmployees = fridaysEmpCount
+
+                }
+            }
+            if(parseFloat($("#Day_6_EmployeeId_"+i).val()) > 0)
+            {
+                saturdays = saturdays+ parseFloat($("#Day_6_EmployeeId_"+i).val());
+
+                saturdaysEmpCount = saturdaysEmpCount+ 1;
+                if(totalWorkingEmployees < saturdaysEmpCount)
+                {
+                    totalWorkingEmployees = saturdaysEmpCount
+
+                }
+            }
+            if(parseFloat($("#Day_7_EmployeeId_"+i).val()) > 0)
+            {
+                sundays = sundays+ parseFloat($("#Day_7_EmployeeId_"+i).val());
+
+                sundaysEmpCount = sundaysEmpCount+ 1;
+                if(totalWorkingEmployees < sundaysEmpCount)
+                {
+                    totalWorkingEmployees = sundaysEmpCount
+
+                }
+            }
+
+        }
+
+        var EmployeesTotHours = mondays + tuesdays+ wednesdays+ thursdays+ fridays+ saturdays+ sundays;
+        $("#EmployeesTotalHours").val(EmployeesTotHours);
+
+
+        $("#MondayTotalHours").val(mondays);
+        $("#TuesdayTotalHours").val(tuesdays);
+        $("#WednesdayTotalHours").val(wednesdays);
+        $("#ThursdayTotalHours").val(thursdays);
+        $("#FridayTotalHours").val(fridays);
+        $("#SaturdayTotalHours").val(saturdays);
+        $("#SundayTotalHours").val(sundays);
+
+
+        $("#MondayTotalEmployees").val(mondaysEmpCount);
+        $("#TuesdayTotalEmployees").val(tuesdaysEmpCount);
+        $("#WednesdayTotalEmployees").val(wednesdaysEmpCount);
+        $("#ThursdayTotalEmployees").val(thursdaysEmpCount);
+        $("#FridayTotalEmployees").val(fridaysEmpCount);
+        $("#SaturdayTotalEmployees").val(saturdaysEmpCount);
+        $("#SundayTotalEmployees").val(sundaysEmpCount);
+        var tWorkingEmp =0;
+        for(var a = 1; a <= totalemp; a++)
+        {
+            var tot = $("#EmployeeTotalHours_"+a).val();
+            if(tot > 0)
+            {
+                tWorkingEmp = tWorkingEmp + 1;
+            }
+        }
+
+        $("#TotalEmployees").val(tWorkingEmp);
+    }
+
+
+
+</script>
+
+
+
+
+<script>
+    function UpdateTimeSheet()
+    {
+        var signVal = $("#signatures").val();
+        if (signVal == null || signVal == '') {
+            window.alert("Please Fill the signature field.");
+            return false;
+        }
+        if (!window.confirm("Are you sure you want to submit this timesheet?")) {
+            return false;
+        }
+        var timesheet = {
+            Id: '@Model.TimeSheetGeneralDetails.Id',
+            Customer_id:'@Model.TimeSheetGeneralDetails.Id',
+            Organization_id : '@Model.TimeSheetGeneralDetails.Organization_id',
+            Start_date : '@Model.TimeSheetGeneralDetails.Created_at',
+            End_date : '@Model.TimeSheetGeneralDetails.End_date',
+            Total_employees:$("#TotalEmployees").val(),
+            Total_hours:$("#EmployeesTotalHours").val(),
+            Submit_by_client:true,
+            Uuid:null,
+            Signature:$("#signatures").val(),
+            Created_at:'@Model.TimeSheetGeneralDetails.Created_at',
+            Updated_at:'',
+            Note: $("#comment").val(),
+            Po_number: '@Model.TimeSheetGeneralDetails.Po_number',
+            Sent:true,
+            For_internal_employee:false
+        }
+
+        var totalemp = $("#totalNoOfEmployees").val();
+        var timeSheet_summary = [];
+        var timeSheet_DetailsList = [];
+
+
+        for (var i = 1; i <= parseFloat(totalemp) ; i++) {
+            var timeSheet_summaryDetails = {
+                Id:$("#Rating_by_client_"+i).attr("alt"),
+                Timesheet_id: @Model.TimeSheetGeneralDetails.Id,
+                Employee_id: $("#EmployeeId_"+i).val(),
+                Rate: $("#EmployeeRate_"+i).val(),
+                Enitial: $("#EmployeeEnitial_"+i).val(),
+                Total_hours : $("#EmployeeTotalHours_"+i).val(),
+                Created_at: '@Model.TimeSheetGeneralDetails.Created_at',
+                Updated_at:null,
+                Rating_by_client:$("#Rating_by_client_"+i).val(),
+                Hours_day_1:$("#Day_1_EmployeeId_" + i).val(),
+                Hours_day_2:$("#Day_2_EmployeeId_" + i).val(),
+                Hours_day_3:$("#Day_3_EmployeeId_" + i).val(),
+                Hours_day_4:$("#Day_4_EmployeeId_" + i).val(),
+                Hours_day_5:$("#Day_5_EmployeeId_" + i).val(),
+                Hours_day_6:$("#Day_6_EmployeeId_" + i).val(),
+                Hours_day_7:$("#Day_7_EmployeeId_" + i).val(),
+                Starting_date:'@Model.TimeSheetSummary[0].Starting_date',
+                Ending_date:'@Model.TimeSheetSummary[0].Ending_date',
+                Starting_day_of_week:'@Model.TimeSheetSummary[0].Starting_day_of_week',
+                Ending_day_of_week:'@Model.TimeSheetSummary[0].Ending_day_of_week'
+            }
+            timeSheet_summary.push(timeSheet_summaryDetails);
+        }
+         $.ajax({
+            type: 'POST',
+            data: JSON.stringify({timesheet: timesheet, timeSheet_summary:timeSheet_summary}),
+            url: '@Url.Action("SubmitTimeSheetDetails", "Timesheets")',
+            dataType: "json",
+            contentType: 'application/json; charset=utf-8',
+            success: function(data) {
+                window.location = "/TSSManage/TimeSheetSuccessSubmit";
+            },
+            error: function(req, status, errorObj) {
+                alert(errorObj.toString());
+            }
+        });
+    }
+
+
+    function UpdateHours(id, employeeCounter)
+    {
+        var totalhours = 0;
+        for(var counter = 1; counter <= 7; counter++)
+        {
+            if ($("#Day_"+counter+"_EmployeeId_"+employeeCounter).val() != '')
+            {
+                var hours = parseFloat($("#Day_"+counter+"_EmployeeId_"+employeeCounter).val());
+                totalhours = totalhours + hours;
+            }
+        }
+        $("#EmployeeTotalHours_"+employeeCounter).val(totalhours);
+        updateEntries1();
+    }
+
+
+</script>
