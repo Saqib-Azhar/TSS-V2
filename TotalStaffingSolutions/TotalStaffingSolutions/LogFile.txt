@@ -24,3 +24,51 @@
 15-Aug-18 4:40:15 PM itextsharp The document has no pages.
 15-Aug-18 4:46:05 PM Object reference not set to an instance of an object.
 15-Aug-18 4:46:05 PM TotalStaffingSolutions Object reference not set to an instance of an object.
+16-Aug-18 12:30:54 PM Object reference not set to an instance of an object.
+16-Aug-18 12:30:54 PM TotalStaffingSolutions Object reference not set to an instance of an object.
+16-Aug-18 12:56:40 PM The width cannot be set.
+16-Aug-18 12:56:40 PM itextsharp The width cannot be set.
+16-Aug-18 12:57:15 PM The width cannot be set.
+16-Aug-18 12:57:15 PM itextsharp The width cannot be set.
+16-Aug-18 12:57:15 PM The width cannot be set.
+16-Aug-18 12:57:15 PM itextsharp The width cannot be set.
+16-Aug-18 12:57:15 PM The document has no pages.
+16-Aug-18 12:57:15 PM itextsharp The document has no pages.
+16-Aug-18 12:57:26 PM The width cannot be set.
+16-Aug-18 12:57:26 PM itextsharp The width cannot be set.
+16-Aug-18 12:57:27 PM The width cannot be set.
+16-Aug-18 12:57:27 PM itextsharp The width cannot be set.
+16-Aug-18 12:57:28 PM The width cannot be set.
+16-Aug-18 12:57:28 PM itextsharp The width cannot be set.
+16-Aug-18 12:57:29 PM The document has no pages.
+16-Aug-18 12:57:29 PM itextsharp The document has no pages.
+16-Aug-18 1:06:16 PM The width cannot be set.
+16-Aug-18 1:06:16 PM itextsharp The width cannot be set.
+16-Aug-18 1:06:17 PM The width cannot be set.
+16-Aug-18 1:06:17 PM itextsharp The width cannot be set.
+16-Aug-18 1:06:17 PM The document has no pages.
+16-Aug-18 1:06:17 PM itextsharp The document has no pages.
+16-Aug-18 1:07:51 PM The width cannot be set.
+16-Aug-18 1:07:51 PM itextsharp The width cannot be set.
+16-Aug-18 1:12:52 PM The underlying provider failed on Open.
+16-Aug-18 1:12:52 PM EntityFramework The underlying provider failed on Open.
+16-Aug-18 1:12:52 PM The process cannot access the file 'C:\Users\sazhar\Desktop\TSS V2\TotalStaffingSolutions\TotalStaffingSolutions\LogFile.txt' because it is being used by another process.
+16-Aug-18 1:12:52 PM mscorlib The process cannot access the file 'C:\Users\sazhar\Desktop\TSS V2\TotalStaffingSolutions\TotalStaffingSolutions\LogFile.txt' because it is being used by another process.
+16-Aug-18 1:12:52 PM The process cannot access the file 'C:\Users\sazhar\Desktop\TSS V2\TotalStaffingSolutions\TotalStaffingSolutions\LogFile.txt' because it is being used by another process.
+16-Aug-18 1:12:52 PM mscorlib The process cannot access the file 'C:\Users\sazhar\Desktop\TSS V2\TotalStaffingSolutions\TotalStaffingSolutions\LogFile.txt' because it is being used by another process.
+16-Aug-18 1:12:53 PM The underlying provider failed on Open.
+16-Aug-18 1:12:53 PM EntityFramework The underlying provider failed on Open.
+16-Aug-18 1:12:53 PM The process cannot access the file 'C:\Users\sazhar\Desktop\TSS V2\TotalStaffingSolutions\TotalStaffingSolutions\LogFile.txt' because it is being used by another process.
+16-Aug-18 1:12:53 PM mscorlib The process cannot access the file 'C:\Users\sazhar\Desktop\TSS V2\TotalStaffingSolutions\TotalStaffingSolutions\LogFile.txt' because it is being used by another process.
+16-Aug-18 1:12:53 PM The process cannot access the file 'C:\Users\sazhar\Desktop\TSS V2\TotalStaffingSolutions\TotalStaffingSolutions\LogFile.txt' because it is being used by another process.
+16-Aug-18 1:12:53 PM mscorlib The process cannot access the file 'C:\Users\sazhar\Desktop\TSS V2\TotalStaffingSolutions\TotalStaffingSolutions\LogFile.txt' because it is being used by another process.
+16-Aug-18 1:12:53 PM The underlying provider failed on Open.
+16-Aug-18 1:12:53 PM EntityFramework The underlying provider failed on Open.
+16-Aug-18 1:12:53 PM The underlying provider failed on Open.
+16-Aug-18 1:12:53 PM EntityFramework The underlying provider failed on Open.
+16-Aug-18 1:12:53 PM The underlying provider failed on Open.
+16-Aug-18 1:12:53 PM EntityFramework The underlying provider failed on Open.
+16-Aug-18 1:12:53 PM The document has no pages.
+16-Aug-18 1:12:53 PM itextsharp The document has no pages.
+16-Aug-18 1:15:16 PM Object reference not set to an instance of an object.
+16-Aug-18 1:15:16 PM TotalStaffingSolutions Object reference not set to an instance of an object.

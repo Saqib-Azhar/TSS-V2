@@ -584,6 +584,7 @@ namespace TotalStaffingSolutions.Controllers
                 Document doc = new Document();
                 doc.SetMargins(10, 10, 10, 10);
                 doc.PageCount = deserialized.Count() - 1;
+                doc.SetPageSize(iTextSharp.text.PageSize.A4.Rotate());
                 //doc.SetMargins(10, 10, 10, 10);
                 string strAttachment = Server.MapPath("~/Downloadss/" + strPDFFileName);
 
@@ -661,9 +662,9 @@ namespace TotalStaffingSolutions.Controllers
                     CustomerDetails = CustomerDetails + "\nWeek Ending:" +
                     TimesheetSummaries[0].Timesheet.End_date.Value.ToString("MM/dd/yyyy");
                 }
-                CustomerDetails = CustomerDetails + "\n\n";
+                CustomerDetails = CustomerDetails +"\n\n" ;
 
-                tableLayout.AddCell(new PdfPCell(new Phrase("\n\n", new Font(Font.FontFamily.TIMES_ROMAN, 10, 1, iTextSharp.text.BaseColor.BLACK)))
+                tableLayout.AddCell(new PdfPCell(new Phrase("\n\n", new Font(Font.FontFamily.TIMES_ROMAN, 14, Font.NORMAL, iTextSharp.text.BaseColor.BLACK)))
                 {
                     Colspan = 13,
                     Border = 0,
@@ -681,7 +682,7 @@ namespace TotalStaffingSolutions.Controllers
                 //    HorizontalAlignment = Element.ALIGN_CENTER
                 //});
                 tableLayout.AddCell(createImageCell());
-                tableLayout.AddCell(new PdfPCell(new Phrase(CustomerDetails, new Font(Font.FontFamily.TIMES_ROMAN, 12, 2, new iTextSharp.text.BaseColor(0, 0, 0))))
+                tableLayout.AddCell(new PdfPCell(new Phrase(CustomerDetails, new Font(Font.FontFamily.TIMES_ROMAN, 20, Font.NORMAL, new iTextSharp.text.BaseColor(0, 0, 0))))
                 {
                     Colspan = 7,
                     Border = 0,
@@ -692,7 +693,7 @@ namespace TotalStaffingSolutions.Controllers
 
 
 
-                tableLayout.AddCell(new PdfPCell(new Phrase("__________________________________________________________________________________________________________________\n\n", new Font(Font.FontFamily.TIMES_ROMAN, 10, 1, iTextSharp.text.BaseColor.BLACK)))
+                tableLayout.AddCell(new PdfPCell(new Phrase("__________________________________________________________________________________________________________________________________________________________________\n\n", new Font(Font.FontFamily.TIMES_ROMAN, 10, 1, iTextSharp.text.BaseColor.BLACK)))
                 {
                     Colspan = 13,
                     Border = 0,
@@ -711,19 +712,19 @@ namespace TotalStaffingSolutions.Controllers
                 AddCellToHeader(tableLayout, "Emp#");
                 AddCellToHeader(tableLayout, "RT");
                 var weekDay = Convert.ToInt32(TimesheetSummaries[0].Starting_day_of_week);
-                AddCellToHeader(tableLayout, values.GetValue(weekDay).ToString() + "\n" + TimesheetSummaries[0].Starting_date.Value.ToString("MMM/dd") );
+                AddCellToHeader(tableLayout, values.GetValue(weekDay).ToString() + "\n" + TimesheetSummaries[0].Starting_date.Value.ToString("MMM/dd") + "\n\n");
                 weekDay = (weekDay == 6) ? 0 : weekDay + 1;
-                AddCellToHeader(tableLayout, values.GetValue(weekDay).ToString() + "\n" + TimesheetSummaries[0].Starting_date.Value.AddDays(1).ToString("MMM/dd") );
+                AddCellToHeader(tableLayout, values.GetValue(weekDay).ToString() + "\n" + TimesheetSummaries[0].Starting_date.Value.AddDays(1).ToString("MMM/dd") + "\n\n");
                 weekDay = (weekDay == 6) ? 0 : weekDay + 1;
-                AddCellToHeader(tableLayout, values.GetValue(weekDay).ToString() + "\n" + TimesheetSummaries[0].Starting_date.Value.AddDays(2).ToString("MMM/dd"));
+                AddCellToHeader(tableLayout, values.GetValue(weekDay).ToString() + "\n" + TimesheetSummaries[0].Starting_date.Value.AddDays(2).ToString("MMM/dd") + "\n\n");
                 weekDay = (weekDay == 6) ? 0 : weekDay + 1;
-                AddCellToHeader(tableLayout, values.GetValue(weekDay).ToString() + "\n" + TimesheetSummaries[0].Starting_date.Value.AddDays(3).ToString("MMM/dd"));
+                AddCellToHeader(tableLayout, values.GetValue(weekDay).ToString() + "\n" + TimesheetSummaries[0].Starting_date.Value.AddDays(3).ToString("MMM/dd") + "\n\n");
                 weekDay = (weekDay == 6) ? 0 : weekDay + 1;
-                AddCellToHeader(tableLayout, values.GetValue(weekDay).ToString() + "\n" + TimesheetSummaries[0].Starting_date.Value.AddDays(4).ToString("MMM/dd"));
+                AddCellToHeader(tableLayout, values.GetValue(weekDay).ToString() + "\n" + TimesheetSummaries[0].Starting_date.Value.AddDays(4).ToString("MMM/dd") + "\n\n");
                 weekDay = (weekDay == 6) ? 0 : weekDay + 1;
-                AddCellToHeader(tableLayout, values.GetValue(weekDay).ToString() + "\n" + TimesheetSummaries[0].Starting_date.Value.AddDays(5).ToString("MMM/dd"));
+                AddCellToHeader(tableLayout, values.GetValue(weekDay).ToString() + "\n" + TimesheetSummaries[0].Starting_date.Value.AddDays(5).ToString("MMM/dd") + "\n\n");
                 weekDay = (weekDay == 6) ? 0 : weekDay + 1;
-                AddCellToHeader(tableLayout, values.GetValue(weekDay).ToString() + "\n" + TimesheetSummaries[0].Starting_date.Value.AddDays(6).ToString("MMM/dd"));
+                AddCellToHeader(tableLayout, values.GetValue(weekDay).ToString() + "\n" + TimesheetSummaries[0].Starting_date.Value.AddDays(6).ToString("MMM/dd") + "\n\n");
                 AddCellToHeader(tableLayout, "Total");
                 AddCellToHeader(tableLayout, "Rate Performance");
 
@@ -787,7 +788,7 @@ namespace TotalStaffingSolutions.Controllers
                     b = !b;
                 }
 
-                tableLayout.AddCell(new PdfPCell(new Phrase("Total Hours", new Font(Font.FontFamily.HELVETICA, 8, 1, iTextSharp.text.BaseColor.BLACK)))
+                tableLayout.AddCell(new PdfPCell(new Phrase("Total Hours", new Font(Font.FontFamily.HELVETICA, 12, 1, iTextSharp.text.BaseColor.BLACK)))
                 {
                     HorizontalAlignment = Element.ALIGN_CENTER,
                     Padding = 3,
@@ -805,7 +806,7 @@ namespace TotalStaffingSolutions.Controllers
                 AddCellToBody(tableLayout, TotalHours.ToString(), false);
                 AddCellToBody(tableLayout, "", false);
 
-                tableLayout.AddCell(new PdfPCell(new Phrase("No of People", new Font(Font.FontFamily.HELVETICA, 8, 1, iTextSharp.text.BaseColor.BLACK)))
+                tableLayout.AddCell(new PdfPCell(new Phrase("No of People", new Font(Font.FontFamily.HELVETICA, 12, 1, iTextSharp.text.BaseColor.BLACK)))
                 {
                     HorizontalAlignment = Element.ALIGN_CENTER,
                     Colspan = 4,
@@ -846,8 +847,6 @@ namespace TotalStaffingSolutions.Controllers
             {
                 Colspan = 6,
                 Border = 0,
-                PaddingBottom = 5,
-                PaddingRight = 5,
                 HorizontalAlignment = Element.ALIGN_CENTER
             };
             return cell;
@@ -858,7 +857,7 @@ namespace TotalStaffingSolutions.Controllers
             try
             {
 
-                tableLayout.AddCell(new PdfPCell(new Phrase(cellText, new Font(Font.FontFamily.TIMES_ROMAN, 10, Font.BOLD, iTextSharp.text.BaseColor.BLACK)))
+                tableLayout.AddCell(new PdfPCell(new Phrase(cellText, new Font(Font.FontFamily.TIMES_ROMAN, 14, Font.BOLD, iTextSharp.text.BaseColor.BLACK)))
                 {
                     HorizontalAlignment = Element.ALIGN_CENTER,
                     Padding = 1,
@@ -883,14 +882,14 @@ namespace TotalStaffingSolutions.Controllers
 
                 var ts = db.Timesheets.FirstOrDefault(s => s.Id == tsid);
 
-                tableLayout.AddCell(new PdfPCell(new Phrase("Authorize Signature: " + ts.Signature, new Font(Font.FontFamily.TIMES_ROMAN, 16, 2, new iTextSharp.text.BaseColor(0, 0, 0))))
+                tableLayout.AddCell(new PdfPCell(new Phrase("\n\n\n\nAuthorize Signature: " + ts.Signature, new Font(Font.FontFamily.TIMES_ROMAN, 16, Font.UNDERLINE, new iTextSharp.text.BaseColor(0, 0, 0))))
                 {
                     Colspan = 13,
                     Border = 0,
                     Padding = 5,
                     HorizontalAlignment = Element.ALIGN_CENTER
                 });
-                tableLayout.AddCell(new PdfPCell(new Phrase("Please e-mail to payroll@4tssi.com on Monday’s before 10:00am ", new Font(Font.FontFamily.TIMES_ROMAN, 12, 2, new iTextSharp.text.BaseColor(0, 0, 0))))
+                tableLayout.AddCell(new PdfPCell(new Phrase("Please e-mail to payroll@4tssi.com on Monday’s before 10:00am ", new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.NORMAL, new iTextSharp.text.BaseColor(0, 0, 0))))
                 {
                     Colspan = 13,
                     Border = 0,
@@ -915,7 +914,7 @@ namespace TotalStaffingSolutions.Controllers
             {
                 var rowColor = (color) ? new iTextSharp.text.BaseColor(247, 248, 249) : new iTextSharp.text.BaseColor(255, 255, 255);
 
-                tableLayout.AddCell(new PdfPCell(new Phrase(cellText, new Font(Font.FontFamily.HELVETICA, 8, 1, iTextSharp.text.BaseColor.BLACK)))
+                tableLayout.AddCell(new PdfPCell(new Phrase(cellText, new Font(Font.FontFamily.HELVETICA, 12, 1, iTextSharp.text.BaseColor.BLACK)))
                 {
                     HorizontalAlignment = Element.ALIGN_CENTER,
                     Padding = 3,
