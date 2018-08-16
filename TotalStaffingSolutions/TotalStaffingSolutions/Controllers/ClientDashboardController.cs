@@ -145,6 +145,7 @@ namespace TotalStaffingSolutions.Controllers
                     byte[] array = ms.GetBuffer();
                 }
                 userObj.DisplayPicture = DisplayPicture.FileName;
+                db.SaveChanges();
 
             }
 

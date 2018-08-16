@@ -72,3 +72,35 @@
 16-Aug-18 1:12:53 PM itextsharp The document has no pages.
 16-Aug-18 1:15:16 PM Object reference not set to an instance of an object.
 16-Aug-18 1:15:16 PM TotalStaffingSolutions Object reference not set to an instance of an object.
+16-Aug-18 2:07:02 PM An error occurred while updating the entries. See the inner exception for details.
+16-Aug-18 2:07:02 PM EntityFramework An error occurred while updating the entries. See the inner exception for details.
+16-Aug-18 2:09:16 PM An error occurred while starting a transaction on the provider connection. See the inner exception for details.
+16-Aug-18 2:09:16 PM EntityFramework An error occurred while starting a transaction on the provider connection. See the inner exception for details.
+16-Aug-18 2:09:20 PM An error occurred while updating the entries. See the inner exception for details.
+16-Aug-18 2:09:20 PM EntityFramework An error occurred while updating the entries. See the inner exception for details.
+16-Aug-18 2:28:06 PM Non-static field requires a target.
+16-Aug-18 2:28:06 PM mscorlib Non-static field requires a target.
+16-Aug-18 2:28:21 PM An error occurred while updating the entries. See the inner exception for details.
+16-Aug-18 2:28:21 PM EntityFramework An error occurred while updating the entries. See the inner exception for details.
+16-Aug-18 2:29:06 PM An error occurred while updating the entries. See the inner exception for details.
+16-Aug-18 2:29:06 PM EntityFramework An error occurred while updating the entries. See the inner exception for details.
+16-Aug-18 3:45:45 PM An error occurred while updating the entries. See the inner exception for details.
+16-Aug-18 3:45:45 PM EntityFramework An error occurred while updating the entries. See the inner exception for details.
+16-Aug-18 3:46:03 PM An error occurred while updating the entries. See the inner exception for details.
+16-Aug-18 3:46:03 PM EntityFramework An error occurred while updating the entries. See the inner exception for details.
+16-Aug-18 3:46:58 PM An error occurred while updating the entries. See the inner exception for details.
+16-Aug-18 3:46:58 PM EntityFramework An error occurred while updating the entries. See the inner exception for details.
+16-Aug-18 3:47:32 PM An error occurred while updating the entries. See the inner exception for details.
+16-Aug-18 3:47:32 PM EntityFramework An error occurred while updating the entries. See the inner exception for details.
+16-Aug-18 3:49:10 PM An error occurred while updating the entries. See the inner exception for details.
+16-Aug-18 3:49:10 PM EntityFramework An error occurred while updating the entries. See the inner exception for details.
+16-Aug-18 3:49:20 PM An error occurred while updating the entries. See the inner exception for details.
+16-Aug-18 3:49:20 PM EntityFramework An error occurred while updating the entries. See the inner exception for details.
+16-Aug-18 3:49:32 PM An error occurred while updating the entries. See the inner exception for details.
+16-Aug-18 3:49:32 PM EntityFramework An error occurred while updating the entries. See the inner exception for details.
+16-Aug-18 4:40:20 PM Object reference not set to an instance of an object.
+16-Aug-18 4:40:20 PM itextsharp Object reference not set to an instance of an object.
+16-Aug-18 5:36:55 PM Non-static field requires a target.
+16-Aug-18 5:36:55 PM mscorlib Non-static field requires a target.
+16-Aug-18 5:36:55 PM Non-static field requires a target.
+16-Aug-18 5:36:55 PM mscorlib Non-static field requires a target.

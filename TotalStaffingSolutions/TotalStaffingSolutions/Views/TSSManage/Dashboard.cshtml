@@ -54,10 +54,10 @@
                 <div class="col-md-6">
                     <div class="row">
                         <div class="col-md-5" style="padding:0 0 0 10px;">
-                            <input type="date" id="start_date" placeholder="Start Date" onchange="DateFilterUpdate(this)" class="form-control" />
+                            <input type="date" id="start_date" placeholder="Start Date" onchange="DateFilterUpdate(this)" class="form-control" data-toggle="tooltip" title="End Date(Min Limit)" />
                         </div>
                         <div class="col-md-5" style="padding:0 7px 0 7px;">
-                            <input type="date" id="end_date" placeholder="End Date" onchange="DateFilterUpdate(this)" class="form-control" />
+                            <input type="date" id="end_date" placeholder="End Date" onchange="DateFilterUpdate(this)" class="form-control" data-toggle="tooltip" title="End Date(Max Limit)" />
                         </div>
                         <div class="col-md-2" style="padding:0 0 0 0;">
                             <button onclick="getResults()" class="form-control btn btn-default"><span class="fa fa-search"></span></button>
@@ -171,7 +171,7 @@
                     dataType: "json",
                     contentType: 'application/json; charset=utf-8',
                     success: function (data) {
-              
+
                         if (data == "Customer Doesn't Exists")
                         {
                             if(confirm("This email address is not registered, Do you want to send the invitation?"))
@@ -367,15 +367,16 @@
                 var html = "";
                 $.each(data, function (i, item) {
                     var email = JSON.stringify(item);
-                    console.log(item);
-                    if (item != null && item != "")
-                    {
-                        html = html + "<div class='row'><div class='col-md-6'>" + item + "</div><div class='col-md-6'><button onclick='SendTimesheetLink(" + timesheetId + "," + email + "," + timesheetStatus + ")' class='btn btn-default form-control'>Send Email</button></div></div><br/>";
-                    }
-                    else if(item == "No Email Available")
+                    if (!validateEmail(item))
                     {
                         html = html + "<div class='row'><div class='col-md-6' style='color:red'>" + item + "</div><div class='col-md-6'></div></div>";
                     }
+
+                    else if (validateEmail(item))
+                    {
+                        html = html + "<div class='row'><div class='col-md-6'>" + item + "</div><div class='col-md-6'><button onclick='SendTimesheetLink(" + timesheetId + "," + email + "," + timesheetStatus + ")' class='btn btn-default form-control'>Send Email</button></div></div><br/>";
+                    }
+
                 });
                 $("#contentBody").html(html);
                 $('.modal-backdrop').remove();
@@ -387,7 +388,10 @@
             }
         });
     }
-
+    function validateEmail(email) {
+        var re = /\S+@@\S+\.\S+/;
+        return re.test(email);
+    }
     function RejectionReason(timesheetId) {
 
         $.ajax({

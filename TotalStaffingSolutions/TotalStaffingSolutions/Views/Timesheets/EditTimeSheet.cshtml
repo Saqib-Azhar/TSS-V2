@@ -83,9 +83,9 @@
                             @for (int i = 0; i < 7; i++)
                             {
                                 DateTime input = Convert.ToDateTime(Model.TimeSheetGeneralDetails.End_date);
-                                input = input.AddDays(-7);
-                                int delta = DayOfWeek.Monday - input.DayOfWeek;
-                                DateTime monday = input.AddDays(delta + i);
+                                input = input.AddDays((-6 + i));
+                                //int delta = DayOfWeek.Monday - input.DayOfWeek;
+                                DateTime monday = input;
                                 <th data-priority="@i" style="text-align:center!important">@monday.ToString("ddd") <br /><span id='date_@i'>@monday.ToString("MM/dd")</span></th>
                             }
                             <th data-priority="6">Total</th>
@@ -509,11 +509,12 @@
 
 
         //////////////////////////////////////////////////////////
-
+        //debugger;
         var tWorkingEmp =0;
         for(var a = 1; a <= totalemp; a++)
         {
             var tot = $("#EmployeeTotalHours_"+a).val();
+            tot = (tot == "NaN")? 0:tot;
             if(tot > 0)
             {
                 tWorkingEmp = tWorkingEmp + 1;
@@ -546,7 +547,7 @@
     function UpdateTimeSheet()
     {
         $("#parent_div :input").attr("disabled", true);
-        debugger;
+        //debugger;
         var timesheet = {
             Id: '@Model.TimeSheetGeneralDetails.Id',
             Customer_id:'@Model.TimeSheetGeneralDetails.Id',
@@ -704,7 +705,7 @@
 
 
 
-        debugger;
+        //debugger;
          $.ajax({
             type: 'POST',
             data: JSON.stringify({timesheet: timesheet, timeSheet_summary:timeSheet_summary, timeSheet_summary_NewEntries:timeSheet_summary_NewEntries}),
@@ -712,7 +713,7 @@
             dataType: "json",
             contentType: 'application/json; charset=utf-8',
             success: function(data) {
-                window.location = "/TSSManage/TimeSheetSuccessSubmit";
+                window.location = "/TSSManage/GoToDashboard";
             },
             error: function(req, status, errorObj) {
                 alert(errorObj.toString());
@@ -726,9 +727,10 @@
         var totalhours = 0;
         for(var counter = 1; counter <= 7; counter++)
         {
-            if($("#EmployeeId_"+employeeCounter+"_Day_"+counter).val() != '')
+        if($("#Day_"+counter+"_EmployeeId_"+employeeCounter).val() != '' && $("#Day_"+counter+"_EmployeeId_"+employeeCounter).val()>=0)
             {
-                var hours = parseFloat($("#EmployeeId_"+employeeCounter+"_Day_"+counter).val());
+                var hours = parseFloat($("#Day_"+counter+"_EmployeeId_"+employeeCounter).val());
+                hours = (hours >= 0)? hours:0;
                 totalhours = totalhours + hours;
             }
         }

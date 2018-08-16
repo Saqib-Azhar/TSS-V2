@@ -411,7 +411,7 @@ namespace TotalStaffingSolutions.Controllers
         }
 
 
-        public ActionResult TimeSheetSuccessSubmit()
+        public ActionResult GoToDashboard()
         {
             if(User.IsInRole("Admin"))
             {

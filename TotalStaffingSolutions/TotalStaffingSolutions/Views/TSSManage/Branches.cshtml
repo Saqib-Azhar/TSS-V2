@@ -12,7 +12,7 @@
                         <tr>
 
                             <th>Name</th>
-                            <th>Time Sheets</th>
+                            @*<th>Time Sheets</th>*@
                             <th>Email</th>
                             @*<th>Last Sent</th>*@
                             <th>Branch Manager</th>
@@ -24,8 +24,8 @@
                         @foreach (var item in Model)
                         {
                             <tr>
-                                <th>@*<span><input type="checkbox" id="rememberme"> </span>*@@item.Name</th>
-                                <td></td>
+                                <th>@item.Name</th>
+                                @*<td></td>*@
                                 <td>@item.Email</td>
                                 <td>@item.Branch_Manager</td>
                                 <td><a class="btn btn-success btn-xs" href="/TSSManage/EditBranch/@item.Id"><span class="waves-effect waves-light fa fa-edit"></span></a></td>

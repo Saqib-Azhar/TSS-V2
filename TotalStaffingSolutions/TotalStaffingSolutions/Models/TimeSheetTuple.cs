@@ -5,11 +5,11 @@ using System.Web;
 
 namespace TotalStaffingSolutions.Models
 {
-    public class TimeSheetTuple
+    public class TimeSheetSummaryTuple
     {
-        public Timesheet TimeSheetGeneralDetails { get; set; }
-        public List<Timesheet_summaries> TimeSheetSummary { get; set; }
-        //public List<Timesheet_details> TimeSheetDetails { get; set; }
+        public Timesheet_summaries TimeSheetSummary { get; set; }
+
+        public string PO_Number { get; set; }
     }
 
     public class TimesheetObjectTuple

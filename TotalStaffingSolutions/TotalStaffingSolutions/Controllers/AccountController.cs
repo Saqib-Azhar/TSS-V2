@@ -69,6 +69,7 @@ namespace TotalStaffingSolutions.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
         {
+            recall:
             if (!ModelState.IsValid)
             {
                 return View(model);
@@ -88,6 +89,9 @@ namespace TotalStaffingSolutions.Controllers
                         else if(User.IsInRole("Admin"))
                         {
                             returnUrl = "/TSSManage/Dashboard";
+                        }
+                        else if(!User.IsInRole("Admin") && !User.IsInRole("User"))
+                        {
                         }
                         return RedirectToLocal(returnUrl);
                     }

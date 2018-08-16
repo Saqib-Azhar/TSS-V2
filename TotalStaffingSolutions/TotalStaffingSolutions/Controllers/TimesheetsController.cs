@@ -449,7 +449,7 @@ namespace TotalStaffingSolutions.Controllers
 
                 var grid = new GridView();
                 var db = new TSS_Sql_Entities();
-                List<Timesheet_summaries> summariesList = new List<Timesheet_summaries>();
+                List<TimeSheetSummaryTuple> summariesList = new List<TimeSheetSummaryTuple>();
                 TimesheetObjectTuple timeSheetDetailsTuple = new TimesheetObjectTuple();
                 foreach (var item in deserialized)
                 {
@@ -460,29 +460,31 @@ namespace TotalStaffingSolutions.Controllers
                     timeSheetDetailsTuple.TimeSheetSummary = db.Timesheet_summaries.Where(s => s.Timesheet_id == id).ToList();
                     foreach (var summary in timeSheetDetailsTuple.TimeSheetSummary)
                     {
-                        summariesList.Add(summary);
+                        TimeSheetSummaryTuple summaryItem = new Models.TimeSheetSummaryTuple();
+                        summaryItem.TimeSheetSummary = summary;
+                        summaryItem.PO_Number = timeSheetDetailsTuple.TimeSheetGeneralDetails.Po_number;
+                        summariesList.Add(summaryItem);
                     }
                     
                 }
-                var pono = timeSheetDetailsTuple.TimeSheetGeneralDetails.Po_number;
 
 
                 grid.DataSource = from d in summariesList
                                   select new
                                   {
-                                      Timeslip_ID = d.Timesheet_id,
+                                      Timeslip_ID = d.TimeSheetSummary.Timesheet_id,
                                       Job_Order_Number = "",
-                                      Customer_ID = d.Timesheet.Customer_Id_Generic,
-                                      Customer_Name = d.Timesheet.Customer.Name,
+                                      Customer_ID = d.TimeSheetSummary.Timesheet.Customer_Id_Generic,
+                                      Customer_Name = d.TimeSheetSummary.Timesheet.Customer.Name,
                                       Site_Code = "",
-                                      Employee_ID = d.Employee_id,
-                                      Employee_Last_Name = d.Employee.Last_name,
-                                      Rate_Code = d.Rate,
+                                      Employee_ID = d.TimeSheetSummary.Employee_id,
+                                      Employee_Last_Name = d.TimeSheetSummary.Employee.Last_name,
+                                      Rate_Code = d.TimeSheetSummary.Rate,
                                       Work_Date = "",
-                                      Batch_Date = d.Timesheet.End_date,
+                                      Batch_Date = d.TimeSheetSummary.Timesheet.End_date,
                                       hour_Type = "",
-                                      Regular_Pay_hours = d.Total_hours,
-                                      Regular_Pay_Rate = d.Rate,
+                                      Regular_Pay_hours = d.TimeSheetSummary.Total_hours,
+                                      Regular_Pay_Rate = d.TimeSheetSummary.Rate,
                                       Regular_Bill_hours = "",
                                       Regular_Bill_Rate = "",
                                       Overtime_Pay_hours = "",
@@ -495,7 +497,7 @@ namespace TotalStaffingSolutions.Controllers
                                       Double_Time_Bill_Rate = "",
                                       Comp_Code = "",
                                       Sales_Tax_Code = "",
-                                      PO_Number = pono,
+                                      PO_Number = d.PO_Number,
                                       Release = "",
                                       Project = "",
                                       Department_Code = "",
@@ -565,7 +567,16 @@ namespace TotalStaffingSolutions.Controllers
 
 
         #region ExportToPDFRegion
-
+        public static iTextSharp.text.Font GetCalibri()
+        {
+            var fontName = "Calibri";
+            if (!FontFactory.IsRegistered(fontName))
+            {
+                var fontPath = (TSSLiveSiteURL+"\\assets\\fonts\\Calibri.ttf").Replace('\\','/');
+                FontFactory.Register(fontPath);
+            }
+            return FontFactory.GetFont(fontName, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+        }
 
         public FileResult ExportInPDF(string ids)
         {
@@ -590,7 +601,7 @@ namespace TotalStaffingSolutions.Controllers
 
                 PdfWriter.GetInstance(doc, workStream).CloseStream = false;
                 doc.Open();
-
+                var a =GetCalibri();
                  int counter = 0;
                 foreach (var item in deserialized)
                 {
@@ -605,8 +616,7 @@ namespace TotalStaffingSolutions.Controllers
 
 
                 }
-
-
+               
                 // Closing the document  
                 doc.Close();
 
@@ -664,7 +674,7 @@ namespace TotalStaffingSolutions.Controllers
                 }
                 CustomerDetails = CustomerDetails +"\n\n" ;
 
-                tableLayout.AddCell(new PdfPCell(new Phrase("\n\n", new Font(Font.FontFamily.TIMES_ROMAN, 14, Font.NORMAL, iTextSharp.text.BaseColor.BLACK)))
+                tableLayout.AddCell(new PdfPCell(new Phrase("\n\n", new Font(Font.FontFamily.UNDEFINED, 14, Font.NORMAL, iTextSharp.text.BaseColor.BLACK)))
                 {
                     Colspan = 13,
                     Border = 0,
@@ -682,7 +692,7 @@ namespace TotalStaffingSolutions.Controllers
                 //    HorizontalAlignment = Element.ALIGN_CENTER
                 //});
                 tableLayout.AddCell(createImageCell());
-                tableLayout.AddCell(new PdfPCell(new Phrase(CustomerDetails, new Font(Font.FontFamily.TIMES_ROMAN, 20, Font.NORMAL, new iTextSharp.text.BaseColor(0, 0, 0))))
+                tableLayout.AddCell(new PdfPCell(new Phrase(CustomerDetails, new Font(Font.FontFamily.UNDEFINED, 20, Font.NORMAL, new iTextSharp.text.BaseColor(0, 0, 0))))
                 {
                     Colspan = 7,
                     Border = 0,
@@ -788,7 +798,7 @@ namespace TotalStaffingSolutions.Controllers
                     b = !b;
                 }
 
-                tableLayout.AddCell(new PdfPCell(new Phrase("Total Hours", new Font(Font.FontFamily.HELVETICA, 12, 1, iTextSharp.text.BaseColor.BLACK)))
+                tableLayout.AddCell(new PdfPCell(new Phrase("Total Hours", new Font(Font.FontFamily.UNDEFINED, 12, 1, iTextSharp.text.BaseColor.BLACK)))
                 {
                     HorizontalAlignment = Element.ALIGN_CENTER,
                     Padding = 3,
@@ -806,7 +816,7 @@ namespace TotalStaffingSolutions.Controllers
                 AddCellToBody(tableLayout, TotalHours.ToString(), false);
                 AddCellToBody(tableLayout, "", false);
 
-                tableLayout.AddCell(new PdfPCell(new Phrase("No of People", new Font(Font.FontFamily.HELVETICA, 12, 1, iTextSharp.text.BaseColor.BLACK)))
+                tableLayout.AddCell(new PdfPCell(new Phrase("No of People", new Font(Font.FontFamily.UNDEFINED, 12, 1, iTextSharp.text.BaseColor.BLACK)))
                 {
                     HorizontalAlignment = Element.ALIGN_CENTER,
                     Colspan = 4,
@@ -857,7 +867,7 @@ namespace TotalStaffingSolutions.Controllers
             try
             {
 
-                tableLayout.AddCell(new PdfPCell(new Phrase(cellText, new Font(Font.FontFamily.TIMES_ROMAN, 14, Font.BOLD, iTextSharp.text.BaseColor.BLACK)))
+                tableLayout.AddCell(new PdfPCell(new Phrase(cellText, new Font(Font.FontFamily.UNDEFINED, 14, Font.BOLD, iTextSharp.text.BaseColor.BLACK)))
                 {
                     HorizontalAlignment = Element.ALIGN_CENTER,
                     Padding = 1,
@@ -882,14 +892,14 @@ namespace TotalStaffingSolutions.Controllers
 
                 var ts = db.Timesheets.FirstOrDefault(s => s.Id == tsid);
 
-                tableLayout.AddCell(new PdfPCell(new Phrase("\n\n\n\nAuthorize Signature: " + ts.Signature, new Font(Font.FontFamily.TIMES_ROMAN, 16, Font.UNDERLINE, new iTextSharp.text.BaseColor(0, 0, 0))))
+                tableLayout.AddCell(new PdfPCell(new Phrase("\n\n\n\nAuthorized Signature: " + ts.Signature, new Font(Font.FontFamily.UNDEFINED, 16, Font.UNDERLINE, new iTextSharp.text.BaseColor(0, 0, 0))))
                 {
                     Colspan = 13,
                     Border = 0,
                     Padding = 5,
                     HorizontalAlignment = Element.ALIGN_CENTER
                 });
-                tableLayout.AddCell(new PdfPCell(new Phrase("Please e-mail to payroll@4tssi.com on Monday’s before 10:00am ", new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.NORMAL, new iTextSharp.text.BaseColor(0, 0, 0))))
+                tableLayout.AddCell(new PdfPCell(new Phrase("Please e-mail to payroll@4tssi.com on Monday’s before 10:00am ", new Font(Font.FontFamily.UNDEFINED, 12, Font.NORMAL, new iTextSharp.text.BaseColor(0, 0, 0))))
                 {
                     Colspan = 13,
                     Border = 0,
@@ -914,7 +924,7 @@ namespace TotalStaffingSolutions.Controllers
             {
                 var rowColor = (color) ? new iTextSharp.text.BaseColor(247, 248, 249) : new iTextSharp.text.BaseColor(255, 255, 255);
 
-                tableLayout.AddCell(new PdfPCell(new Phrase(cellText, new Font(Font.FontFamily.HELVETICA, 12, 1, iTextSharp.text.BaseColor.BLACK)))
+                tableLayout.AddCell(new PdfPCell(new Phrase(cellText, new Font(Font.FontFamily.UNDEFINED, 12, 1, iTextSharp.text.BaseColor.BLACK)))
                 {
                     HorizontalAlignment = Element.ALIGN_CENTER,
                     Padding = 3,
@@ -985,11 +995,11 @@ namespace TotalStaffingSolutions.Controllers
                 //NewTimeSheet.Total_hours = timesheet.Total_hours;
                 NewTimeSheet.Updated_at = DateTime.Now;
                 NewTimeSheet.Submit_by_client = false;
-                NewTimeSheet.Sent = true;
+                NewTimeSheet.Sent = false;
                 //var customer = db.Customers.FirstOrDefault(s => s.Id == timesheet.Customer_id);
                 //if (customer != null)
                 //    NewTimeSheet.Customer_Id_Generic = customer.Customer_id;
-                //NewTimeSheet.Status_id = 3;
+               // NewTimeSheet.Status_id = 1;
 
                 // db.Timesheets.Add(NewTimeSheet);
                 db.SaveChanges();

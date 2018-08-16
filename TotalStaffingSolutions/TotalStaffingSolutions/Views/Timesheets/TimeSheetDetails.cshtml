@@ -202,7 +202,7 @@
             <div class="new-forms-buttons">
                 <button type="button" class="btn btn-success btn-xs waves-effect waves-light">Save As draft</button>
                 <button type="button" class="btn btn-primary btn-xs waves-effect waves-light" onclick="UpdateTimeSheet()">Submit</button>
-                <a class="btn btn-default btn-xs waves-effect waves-light pull-right" href="/TSSManage/TimeSheetSuccessSubmit">Back to List</a>
+                <a class="btn btn-default btn-xs waves-effect waves-light pull-right" href="/TSSManage/GoToDashboard">Back to List</a>
             </div>
             <div class="bottom-text">
                 <input type="text" id="signatures" value="@Model.TimeSheetGeneralDetails.Signature" style="border-style:solid; text-align:center" />
@@ -467,7 +467,7 @@
             dataType: "json",
             contentType: 'application/json; charset=utf-8',
             success: function(data) {
-                window.location = "/TSSManage/TimeSheetSuccessSubmit";
+                window.location = "/TSSManage/GoToDashboard";
             },
             error: function(req, status, errorObj) {
                 alert(errorObj.toString());

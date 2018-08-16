@@ -351,10 +351,12 @@
     <Content Include="assets\Image-not-available.png" />
     <Content Include="assets\images\404.jpg" />
     <Content Include="assets\images\icon-email.png" />
+    <Content Include="assets\images\sativa-new.png" />
     <Content Include="assets\images\sativa.png" />
     <Content Include="assets\loading_gif.gif" />
     <Content Include="assets\logo-w.png" />
     <Content Include="assets\logo.png" />
+    <Content Include="assets\pdfLogo.png" />
     <Content Include="assets\plugin\bootstrap\css\bootstrap-theme.css" />
     <Content Include="assets\plugin\bootstrap\css\bootstrap-theme.min.css" />
     <Content Include="assets\plugin\bootstrap\css\bootstrap.css" />
@@ -1750,6 +1752,9 @@
     <Content Include="Models\TSSModel.edmx.diagram">
       <DependentUpon>TSSModel.edmx</DependentUpon>
     </Content>
+    <Content Include="assets\fonts\Calibri.ttf" />
+    <Content Include="assets\fonts\CALIBRIB.TTF" />
+    <Content Include="assets\fonts\CALIBRIZ.TTF" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
