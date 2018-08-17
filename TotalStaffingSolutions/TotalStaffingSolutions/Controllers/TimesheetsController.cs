@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -18,6 +19,7 @@ using System.Web.Mvc;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using TotalStaffingSolutions.Models;
+using Excel = Microsoft.Office.Interop.Excel;
 
 namespace TotalStaffingSolutions.Controllers
 {
@@ -294,9 +296,6 @@ namespace TotalStaffingSolutions.Controllers
                             //message.CC.Add("jgallelli@4tssi.com");
                             smtp.Send(message);
                         }
-                        ///
-
-
                     }
                     catch (Exception ex)
                     {
@@ -472,7 +471,7 @@ namespace TotalStaffingSolutions.Controllers
                 grid.DataSource = from d in summariesList
                                   select new
                                   {
-                                      Timeslip_ID = d.TimeSheetSummary.Timesheet_id,
+                                      Timeslip_ID = "000000"+d.TimeSheetSummary.Timesheet_id,
                                       Job_Order_Number = "",
                                       Customer_ID = d.TimeSheetSummary.Timesheet.Customer_Id_Generic,
                                       Customer_Name = d.TimeSheetSummary.Timesheet.Customer.Name,
@@ -533,10 +532,9 @@ namespace TotalStaffingSolutions.Controllers
                                       Expires_On = "",
 
                                   };
-
+                
                 grid.DataBind();
-
-
+                
 
                 Response.ClearContent();
                 Response.AddHeader("content-disposition", "attachment; filename=TimeSheet.xls");
@@ -595,7 +593,7 @@ namespace TotalStaffingSolutions.Controllers
                 Document doc = new Document();
                 doc.SetMargins(10, 10, 10, 10);
                 doc.PageCount = deserialized.Count() - 1;
-                doc.SetPageSize(iTextSharp.text.PageSize.A4.Rotate());
+                //doc.SetPageSize(iTextSharp.text.PageSize.A4.Rotate());
                 //doc.SetMargins(10, 10, 10, 10);
                 string strAttachment = Server.MapPath("~/Downloadss/" + strPDFFileName);
 
@@ -703,7 +701,7 @@ namespace TotalStaffingSolutions.Controllers
 
 
 
-                tableLayout.AddCell(new PdfPCell(new Phrase("__________________________________________________________________________________________________________________________________________________________________\n\n", new Font(Font.FontFamily.TIMES_ROMAN, 10, 1, iTextSharp.text.BaseColor.BLACK)))
+                tableLayout.AddCell(new PdfPCell(new Phrase("__________________________________________________________________________________________________________________\n\n", new Font(Font.FontFamily.TIMES_ROMAN, 10, 1, iTextSharp.text.BaseColor.BLACK)))
                 {
                     Colspan = 13,
                     Border = 0,
@@ -722,21 +720,21 @@ namespace TotalStaffingSolutions.Controllers
                 AddCellToHeader(tableLayout, "Emp#");
                 AddCellToHeader(tableLayout, "RT");
                 var weekDay = Convert.ToInt32(TimesheetSummaries[0].Starting_day_of_week);
-                AddCellToHeader(tableLayout, values.GetValue(weekDay).ToString() + "\n" + TimesheetSummaries[0].Starting_date.Value.ToString("MMM/dd") + "\n\n");
+                AddCellToHeader(tableLayout, values.GetValue(weekDay).ToString() + "\n" + TimesheetSummaries[0].Starting_date.Value.ToString("MMM/dd") + "\n\n",10);
                 weekDay = (weekDay == 6) ? 0 : weekDay + 1;
-                AddCellToHeader(tableLayout, values.GetValue(weekDay).ToString() + "\n" + TimesheetSummaries[0].Starting_date.Value.AddDays(1).ToString("MMM/dd") + "\n\n");
+                AddCellToHeader(tableLayout, values.GetValue(weekDay).ToString() + "\n" + TimesheetSummaries[0].Starting_date.Value.AddDays(1).ToString("MMM/dd") + "\n\n",10);
                 weekDay = (weekDay == 6) ? 0 : weekDay + 1;
-                AddCellToHeader(tableLayout, values.GetValue(weekDay).ToString() + "\n" + TimesheetSummaries[0].Starting_date.Value.AddDays(2).ToString("MMM/dd") + "\n\n");
+                AddCellToHeader(tableLayout, values.GetValue(weekDay).ToString() + "\n" + TimesheetSummaries[0].Starting_date.Value.AddDays(2).ToString("MMM/dd") + "\n\n",10);
                 weekDay = (weekDay == 6) ? 0 : weekDay + 1;
-                AddCellToHeader(tableLayout, values.GetValue(weekDay).ToString() + "\n" + TimesheetSummaries[0].Starting_date.Value.AddDays(3).ToString("MMM/dd") + "\n\n");
+                AddCellToHeader(tableLayout, values.GetValue(weekDay).ToString() + "\n" + TimesheetSummaries[0].Starting_date.Value.AddDays(3).ToString("MMM/dd") + "\n\n",10);
                 weekDay = (weekDay == 6) ? 0 : weekDay + 1;
-                AddCellToHeader(tableLayout, values.GetValue(weekDay).ToString() + "\n" + TimesheetSummaries[0].Starting_date.Value.AddDays(4).ToString("MMM/dd") + "\n\n");
+                AddCellToHeader(tableLayout, values.GetValue(weekDay).ToString() + "\n" + TimesheetSummaries[0].Starting_date.Value.AddDays(4).ToString("MMM/dd") + "\n\n",10);
                 weekDay = (weekDay == 6) ? 0 : weekDay + 1;
-                AddCellToHeader(tableLayout, values.GetValue(weekDay).ToString() + "\n" + TimesheetSummaries[0].Starting_date.Value.AddDays(5).ToString("MMM/dd") + "\n\n");
+                AddCellToHeader(tableLayout, values.GetValue(weekDay).ToString() + "\n" + TimesheetSummaries[0].Starting_date.Value.AddDays(5).ToString("MMM/dd") + "\n\n",10);
                 weekDay = (weekDay == 6) ? 0 : weekDay + 1;
-                AddCellToHeader(tableLayout, values.GetValue(weekDay).ToString() + "\n" + TimesheetSummaries[0].Starting_date.Value.AddDays(6).ToString("MMM/dd") + "\n\n");
+                AddCellToHeader(tableLayout, values.GetValue(weekDay).ToString() + "\n" + TimesheetSummaries[0].Starting_date.Value.AddDays(6).ToString("MMM/dd") + "\n\n",10);
                 AddCellToHeader(tableLayout, "Total");
-                AddCellToHeader(tableLayout, "Rate Performance");
+                AddCellToHeader(tableLayout, "Rate Performance",10);
 
                 ////Add body  
                 bool b = true;
@@ -861,13 +859,13 @@ namespace TotalStaffingSolutions.Controllers
             };
             return cell;
         }
-    // Method to add single cell to the Header  
-    private static void AddCellToHeader(PdfPTable tableLayout, string cellText)
+        // Method to add single cell to the Header  
+        private static void AddCellToHeader(PdfPTable tableLayout, string cellText, int fontSize = 12)
         {
             try
             {
 
-                tableLayout.AddCell(new PdfPCell(new Phrase(cellText, new Font(Font.FontFamily.UNDEFINED, 14, Font.BOLD, iTextSharp.text.BaseColor.BLACK)))
+                tableLayout.AddCell(new PdfPCell(new Phrase(cellText, new Font(Font.FontFamily.UNDEFINED, fontSize, Font.BOLD, iTextSharp.text.BaseColor.BLACK)))
                 {
                     HorizontalAlignment = Element.ALIGN_CENTER,
                     Padding = 1,
@@ -1085,7 +1083,64 @@ namespace TotalStaffingSolutions.Controllers
             }
         }
 
+        //public void textExcel()
+        //{
 
+
+        //    string path = Server.MapPath("~/assets/csharp-Excel.xls");
+        //    System.IO.FileInfo file = new System.IO.FileInfo(path);
+        //    string Outgoingfile = "FileName.xlsx";
+        //    if (file.Exists)
+        //    {
+
+        //        Response.Clear();
+        //        Response.ClearContent();
+        //        Response.ClearHeaders();
+        //        Response.AddHeader("Content-Disposition", "attachment; filename=" + Outgoingfile);
+        //        Response.AddHeader("Content-Length", file.Length.ToString());
+        //        Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+        //        Response.WriteFile(file.FullName);
+        //        Response.Flush();
+        //        Response.Close();
+
+        //    }
+        //    else
+        //    {
+        //        Response.Write("This file does not exist.");
+        //    }
+
+        //}
+
+
+
+
+        public MemoryStream Download()
+        {
+            MemoryStream memStream;
+
+            using (var package = new ExcelPackage())
+            {
+                var worksheet = package.Workbook.Worksheets.Add("New Sheet");
+
+                worksheet.Cells[1, 1].Value = "ID";
+                worksheet.Cells[1, 2].Value = "Name";
+                worksheet.Cells[2, 1].Value = "1";
+                worksheet.Cells[2, 2].Value = "One";
+                worksheet.Cells[3, 1].Value = "2";
+                worksheet.Cells[3, 2].Value = "Two";
+
+                memStream = new MemoryStream(package.GetAsByteArray());
+            }
+
+            return memStream;
+        }
+
+
+        public FileStreamResult Download()
+        {
+            var memStream = BusinessLogic.Download();
+            result File(memStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        }
         #endregion
     }
 }

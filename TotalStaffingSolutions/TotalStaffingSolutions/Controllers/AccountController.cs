@@ -69,7 +69,6 @@ namespace TotalStaffingSolutions.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
         {
-            recall:
             if (!ModelState.IsValid)
             {
                 return View(model);
